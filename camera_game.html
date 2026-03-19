@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HALF HOUR TERMINUS - MISSION</title>
+    <title>Match AR! - MISSION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
@@ -569,7 +569,7 @@
 
     <!-- Leaderboard -->
     <div class="leaderboard" id="leaderboard">
-        <h3>▶ RANKING</h3>
+        <h3>▶ GLOBAL RANKING</h3>
         <div id="leaderboardList"></div>
     </div>
 
@@ -578,25 +578,25 @@
         <div class="status-bar">
             <div class="level-info">
                 <div class="level-badge" id="currentLevel">LV 01</div>
-                <div class="phase-badge" id="phaseIndicator">CAPTURE</div>
+                <div class="phase-badge" id="phaseIndicator">READY</div>
             </div>
-            <div class="timer" id="timer">60s</div>
+            <div class="timer" id="timer">--</div>
         </div>
 
         <!-- Camera Init Button -->
         <div class="camera-init" id="cameraInit">
             <button onclick="startCamera()" id="cameraInitBtn">
-                ▶ INITIALIZE CAMERA
+                ▶ JOIN AR MATCH
             </button>
-            <p>// CAMERA ACCESS REQUIRED //</p>
+            <p>// CONNECT TO GLOBAL PLAYERS //</p>
         </div>
 
         <!-- Step Indicator -->
         <div class="step-indicator" id="stepIndicator" style="display: none;">
-            <div class="step" id="step1">CAPTURE</div>
-            <div class="step" id="step2">CONFIRM</div>
-            <div class="step" id="step3">WAIT</div>
-            <div class="step" id="step4">MATCH</div>
+            <div class="step" id="step1">MATCHING</div>
+            <div class="step" id="step2">RECEIVED</div>
+            <div class="step" id="step3">CAPTURE</div>
+            <div class="step" id="step4">SUBMIT</div>
             <div class="step" id="step5">SCORE</div>
         </div>
 
@@ -605,20 +605,15 @@
             <!-- Question Area -->
             <div class="question-area">
                 <div class="section-title">
-                    <span>> TARGET</span>
+                    <span>> CHALLENGE FROM</span>
                     <span id="questionOwner"></span>
                 </div>
                 <div class="image-container" id="targetImage">
                     <img id="targetImg" src="" alt="TARGET" style="display: none;">
                     <div class="placeholder" id="targetPlaceholder">
-                        <i>⌛</i>
-                        <p>AWAITING TARGET</p>
+                        <i>🌍</i>
+                        <p>MATCHING GLOBAL PLAYERS...</p>
                     </div>
-                </div>
-                
-                <div class="image-container" id="questionPreviewContainer" style="display: none;">
-                    <div class="section-title">> YOUR SHOT</div>
-                    <img id="questionPreview" src="" alt="YOUR SHOT" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
 
                 <!-- Similarity Meter -->
@@ -640,7 +635,7 @@
             <!-- Camera Area -->
             <div class="camera-area">
                 <div class="section-title">
-                    <span>> CAMERA</span>
+                    <span>> YOUR CAMERA</span>
                     <span id="cameraStatus" class="offline">OFFLINE</span>
                 </div>
                 <div class="image-container">
@@ -654,8 +649,8 @@
 
                 <!-- Photo Preview -->
                 <div class="image-container" id="photoPreviewContainer" style="display: none;">
-                    <div class="section-title">> PREVIEW</div>
-                    <img id="photoPreview" src="" alt="PREVIEW" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="section-title">> YOUR SHOT</div>
+                    <img id="photoPreview" src="" alt="YOUR SHOT" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
 
                 <!-- Photo Actions -->
@@ -667,15 +662,13 @@
 
         <!-- Game Control Buttons -->
         <div class="game-controls" id="gameControls" style="display: none;">
-            <button class="btn" id="startGameBtn" onclick="startGame()">▶ START GAME</button>
-            <button class="btn" id="confirmQuestionBtn" onclick="confirmQuestion()" style="display: none;">✓ CONFIRM</button>
-            <button class="btn" id="submitAnswerBtn" onclick="submitAnswer()" style="display: none;">⬆ SUBMIT</button>
-            <button class="btn" id="nextRoundBtn" onclick="nextRound()" style="display: none;">⏭ NEXT</button>
+            <button class="btn" id="submitAnswerBtn" onclick="submitAnswer()" style="display: none;">⬆ SUBMIT MATCH</button>
+            <button class="btn" id="nextRoundBtn" onclick="nextRound()" style="display: none;">⏭ NEXT CHALLENGE</button>
         </div>
 
         <!-- Players Section -->
         <div class="players-section" id="playersSection" style="display: none;">
-            <h3>> ACTIVE HUNTERS</h3>
+            <h3>> ACTIVE PLAYERS</h3>
             <div class="players-grid" id="playersList"></div>
         </div>
     </div>
@@ -686,13 +679,10 @@
     <script>
         // Game Configuration
         const GAME_CONFIG = {
-            baseQuestionTime: 30,
-            baseAnswerTime: 60,
-            timeReducePerLevel: 5,
-            minTime: 10,
-            similarityThreshold: 50,
-            goodThreshold: 65,
-            perfectThreshold: 75
+            matchTime: 45,
+            similarityThreshold: 70,
+            goodThreshold: 85,
+            perfectThreshold: 95
         };
 
         // Game State
@@ -701,7 +691,7 @@
             phase: 'idle',
             timer: 0,
             timerInterval: null,
-            questionPhoto: null,
+            currentChallenge: null,
             currentPhoto: null,
             players: [],
             currentPlayerId: 'player1',
@@ -711,12 +701,32 @@
             lastResult: null
         };
 
-        // Mock Players
-        const mockPlayers = [
-            { id: 'player1', name: 'YOU', avatar: '👤', score: 0, isCurrent: true },
-            { id: 'player2', name: 'HUNTER A', avatar: '⚡', score: 0 },
-            { id: 'player3', name: 'HUNTER B', avatar: '🔥', score: 0 }
+        // Mock Global Players Database (模擬全球玩家)
+        const globalPlayers = [
+            { id: 'p1001', name: 'TOKYO_HUNTER', avatar: '🇯🇵', score: 1250 },
+            { id: 'p1002', name: 'NY_PHOTO', avatar: '🇺🇸', score: 980 },
+            { id: 'p1003', name: 'LONDON_FOX', avatar: '🇬🇧', score: 1560 },
+            { id: 'p1004', name: 'PARIS_SHOT', avatar: '🇫🇷', score: 820 },
+            { id: 'p1005', name: 'BERLIN_VIEW', avatar: '🇩🇪', score: 1100 },
+            { id: 'p1006', name: 'SEOUL_SNAP', avatar: '🇰🇷', score: 1430 },
+            { id: 'p1007', name: 'SHANGHAI_ARK', avatar: '🇨🇳', score: 1680 },
+            { id: 'p1008', name: 'SING_LION', avatar: '🇸🇬', score: 920 }
         ];
+
+        // Mock Challenge Photos Database (模擬全球玩家的照片)
+        const challengePhotos = [
+            'https://picsum.photos/400/300?random=101',
+            'https://picsum.photos/400/300?random=102',
+            'https://picsum.photos/400/300?random=103',
+            'https://picsum.photos/400/300?random=104',
+            'https://picsum.photos/400/300?random=105',
+            'https://picsum.photos/400/300?random=106',
+            'https://picsum.photos/400/300?random=107',
+            'https://picsum.photos/400/300?random=108'
+        ];
+
+        // Current online players (隨機選取3個全球玩家)
+        let onlinePlayers = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -724,19 +734,50 @@
         });
 
         function initGame() {
-            gameState.players = [...mockPlayers];
+            // 隨機選取3個線上玩家
+            onlinePlayers = shuffleArray(globalPlayers).slice(0, 3);
+            gameState.players = onlinePlayers.map((p, index) => ({
+                id: p.id,
+                name: p.name,
+                avatar: p.avatar,
+                score: p.score,
+                isCurrent: index === 0
+            }));
+            
             updateLeaderboard();
             updatePlayersList();
+        }
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Get random challenge
+        function getRandomChallenge() {
+            const randomPlayer = onlinePlayers[Math.floor(Math.random() * onlinePlayers.length)];
+            const randomPhoto = challengePhotos[Math.floor(Math.random() * challengePhotos.length)];
+            
+            return {
+                playerName: randomPlayer.name,
+                playerAvatar: randomPlayer.avatar,
+                photoUrl: randomPhoto,
+                timestamp: new Date().toLocaleTimeString()
+            };
         }
 
         // Camera Functions
         async function startCamera() {
             const cameraBtn = document.getElementById('cameraInitBtn');
             cameraBtn.disabled = true;
-            cameraBtn.textContent = 'REQUESTING...';
+            cameraBtn.textContent = 'CONNECTING...';
             
             try {
-                showToast('REQUESTING CAMERA ACCESS...');
+                showToast('CONNECTING TO GLOBAL NETWORK...');
                 
                 const constraints = {
                     video: {
@@ -777,17 +818,18 @@
                 document.getElementById('gameControls').style.display = 'flex';
                 document.getElementById('playersSection').style.display = 'block';
                 
-                showToast('✅ CAMERA ONLINE');
+                // Start matching with global players
+                startMatching();
+                
+                showToast('✅ CONNECTED TO ' + onlinePlayers.length + ' PLAYERS');
                 
             } catch (error) {
                 console.error('Camera error:', error);
-                let errorMessage = 'CAMERA ERROR';
+                let errorMessage = 'CONNECTION ERROR';
                 if (error.name === 'NotAllowedError') {
                     errorMessage = 'ACCESS DENIED';
                 } else if (error.name === 'NotFoundError') {
                     errorMessage = 'NO CAMERA FOUND';
-                } else if (error.name === 'NotReadableError') {
-                    errorMessage = 'CAMERA IN USE';
                 }
                 showToast('❌ ' + errorMessage, 'error');
                 
@@ -796,16 +838,101 @@
                 cameraStatus.className = 'offline';
             } finally {
                 cameraBtn.disabled = false;
-                cameraBtn.textContent = '▶ INITIALIZE CAMERA';
+                cameraBtn.textContent = '▶ JOIN AR MATCH';
             }
         }
 
-        // Image Comparison Functions
-        async function calculateImageSimilarity(img1Data, img2Data) {
+        // Start matching
+        function startMatching() {
+            gameState.phase = 'matching';
+            updateSteps(1);
+            updatePhase('MATCHING');
+            
+            showToast('🔍 FINDING CHALLENGES...');
+            
+            // Simulate network delay
+            setTimeout(() => {
+                receiveChallenge();
+            }, 2000);
+        }
+
+        // Receive random challenge
+        function receiveChallenge() {
+            const challenge = getRandomChallenge();
+            gameState.currentChallenge = challenge;
+            
+            document.getElementById('targetImg').src = challenge.photoUrl;
+            document.getElementById('targetImg').style.display = 'block';
+            document.getElementById('targetPlaceholder').style.display = 'none';
+            document.getElementById('questionOwner').textContent = `👤 ${challenge.playerName} ${challenge.playerAvatar}`;
+            
+            gameState.phase = 'received';
+            updateSteps(2);
+            updatePhase('CHALLENGE RECEIVED');
+            
+            showToast(`📸 CHALLENGE FROM ${challenge.playerName}`);
+            
+            // Start capture phase
+            setTimeout(() => {
+                startCapturePhase();
+            }, 2000);
+        }
+
+        // Start capture phase
+        function startCapturePhase() {
+            gameState.phase = 'capture';
+            updateSteps(3);
+            updatePhase('CAPTURE MATCH');
+            
+            startTimer(GAME_CONFIG.matchTime);
+            
+            document.getElementById('takePhotoBtn').disabled = false;
+            document.getElementById('submitAnswerBtn').style.display = 'inline-block';
+            
+            showToast('🎯 MATCH THE ANGLE');
+        }
+
+        // Photo Functions
+        function takePhoto() {
+            if (!gameState.cameraActive) {
+                showToast('CAMERA OFFLINE', 'error');
+                return;
+            }
+
+            if (gameState.phase !== 'capture') {
+                showToast('WAIT FOR CHALLENGE', 'error');
+                return;
+            }
+
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const photoData = canvas.toDataURL('image/jpeg', 0.95);
+            gameState.currentPhoto = photoData;
+            
+            document.getElementById('photoPreview').src = photoData;
+            document.getElementById('photoPreviewContainer').style.display = 'block';
+            
+            calculateAndShowSimilarity();
+            
+            document.querySelector('.camera-area').classList.add('shake');
+            setTimeout(() => {
+                document.querySelector('.camera-area').classList.remove('shake');
+            }, 300);
+        }
+
+        // Image Comparison
+        async function calculateImageSimilarity(img1Url, img2Data) {
             return new Promise((resolve) => {
                 const img1 = new Image();
                 const img2 = new Image();
                 let loadedCount = 0;
+                
+                // 允許跨域
+                img1.crossOrigin = 'anonymous';
                 
                 img1.onload = () => {
                     loadedCount++;
@@ -823,7 +950,7 @@
                     }
                 };
                 
-                img1.src = img1Data;
+                img1.src = img1Url;
                 img2.src = img2Data;
             });
         }
@@ -837,11 +964,11 @@
             canvas.height = size;
             
             ctx.drawImage(img1, 0, 0, size, size);
-            const features1 = extractFriendlyFeatures(ctx, size);
+            const features1 = extractFeatures(ctx, size);
             
             ctx.clearRect(0, 0, size, size);
             ctx.drawImage(img2, 0, 0, size, size);
-            const features2 = extractFriendlyFeatures(ctx, size);
+            const features2 = extractFeatures(ctx, size);
             
             let totalDifference = 0;
             let maxDifference = 0;
@@ -857,15 +984,12 @@
             const maxDiffPenalty = Math.min(maxDifference / 255 * 30, 30);
             similarity = similarity - maxDiffPenalty;
             
-            similarity = Math.max(0, Math.min(100, similarity));
-            
-            return Math.round(similarity);
+            return Math.round(Math.max(0, Math.min(100, similarity)));
         }
 
-        function extractFriendlyFeatures(ctx, size) {
+        function extractFeatures(ctx, size) {
             const imageData = ctx.getImageData(0, 0, size, size);
             const data = imageData.data;
-            
             const features = [];
             
             for (let i = 0; i < data.length; i += 16) {
@@ -877,158 +1001,16 @@
                 features.push(gray);
             }
             
-            for (let y = 0; y < size; y += 8) {
-                for (let x = 0; x < size; x += 8) {
-                    let sum = 0;
-                    let count = 0;
-                    
-                    for (let dy = 0; dy < 8 && y + dy < size; dy++) {
-                        for (let dx = 0; dx < 8 && x + dx < size; dx++) {
-                            const idx = ((y + dy) * size + (x + dx)) * 4;
-                            sum += data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
-                            count++;
-                        }
-                    }
-                    
-                    features.push(Math.round(sum / count));
-                }
-            }
-            
             return features;
         }
 
-        // Photo Functions
-        function takePhoto() {
-            if (!gameState.cameraActive) {
-                showToast('CAMERA OFFLINE', 'error');
-                return;
-            }
-
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-            
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            const photoData = canvas.toDataURL('image/jpeg', 0.95);
-            gameState.currentPhoto = photoData;
-            
-            document.getElementById('photoPreview').src = photoData;
-            document.getElementById('photoPreviewContainer').style.display = 'block';
-            
-            if (gameState.phase === 'idle' || gameState.phase === 'takingQuestion') {
-                gameState.phase = 'takingQuestion';
-                document.getElementById('confirmQuestionBtn').style.display = 'inline-block';
-                document.getElementById('submitAnswerBtn').style.display = 'none';
-                showToast('📸 CAPTURE COMPLETE');
-            } else if (gameState.phase === 'answering') {
-                calculateAndShowSimilarity();
-            }
-            
-            document.querySelector('.camera-area').classList.add('shake');
-            setTimeout(() => {
-                document.querySelector('.camera-area').classList.remove('shake');
-            }, 300);
-        }
-
-        // Game Flow Functions
-        function startGame() {
-            gameState.phase = 'takingQuestion';
-            gameState.level = 1;
-            gameState.questionPhoto = null;
-            gameState.currentPhoto = null;
-            gameState.score = 0;
-            
-            gameState.players = gameState.players.map(p => {
-                if (p.isCurrent) {
-                    return { ...p, score: 0 };
-                }
-                return p;
-            });
-            
-            updateSteps(1);
-            updatePhase('CAPTURE TARGET');
-            startTimer(GAME_CONFIG.baseQuestionTime);
-            
-            document.getElementById('startGameBtn').style.display = 'none';
-            document.getElementById('confirmQuestionBtn').style.display = 'none';
-            document.getElementById('submitAnswerBtn').style.display = 'none';
-            document.getElementById('nextRoundBtn').style.display = 'none';
-            document.getElementById('takePhotoBtn').disabled = false;
-            
-            document.getElementById('targetImg').style.display = 'none';
-            document.getElementById('targetPlaceholder').style.display = 'flex';
-            document.getElementById('questionPreviewContainer').style.display = 'none';
-            document.getElementById('photoPreviewContainer').style.display = 'none';
-            document.getElementById('similarityMeter').style.display = 'none';
-            document.getElementById('resultBox').style.display = 'none';
-            document.getElementById('questionOwner').textContent = '';
-            
-            updateLeaderboard();
-            updatePlayersList();
-            
-            showToast('🎮 MISSION STARTED');
-        }
-
-        function confirmQuestion() {
-            if (!gameState.currentPhoto) {
-                showToast('NO CAPTURE', 'error');
-                return;
-            }
-
-            gameState.questionPhoto = gameState.currentPhoto;
-            
-            document.getElementById('targetImg').src = gameState.questionPhoto;
-            document.getElementById('targetImg').style.display = 'block';
-            document.getElementById('targetPlaceholder').style.display = 'none';
-            
-            document.getElementById('questionPreview').src = gameState.questionPhoto;
-            document.getElementById('questionPreviewContainer').style.display = 'block';
-            
-            gameState.phase = 'waiting';
-            updateSteps(3);
-            updatePhase('WAITING');
-            
-            stopTimer();
-            
-            document.getElementById('confirmQuestionBtn').style.display = 'none';
-            document.getElementById('takePhotoBtn').disabled = true;
-            
-            showToast('✅ TARGET SET');
-            
-            setTimeout(() => {
-                startAnsweringPhase();
-            }, 2000);
-        }
-
-        function startAnsweringPhase() {
-            gameState.phase = 'answering';
-            updateSteps(4);
-            updatePhase('MATCH TARGET');
-            
-            const otherPlayers = gameState.players.filter(p => !p.isCurrent);
-            if (otherPlayers.length > 0) {
-                const randomPlayer = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
-                document.getElementById('questionOwner').textContent = `👤 ${randomPlayer.name}`;
-            }
-            
-            const answerTime = Math.max(
-                GAME_CONFIG.baseAnswerTime - (gameState.level - 1) * GAME_CONFIG.timeReducePerLevel,
-                GAME_CONFIG.minTime
-            );
-            startTimer(answerTime);
-            
-            document.getElementById('takePhotoBtn').disabled = false;
-            document.getElementById('submitAnswerBtn').style.display = 'inline-block';
-            
-            showToast('🎯 FIND MATCHING ANGLE');
-        }
-
-        // Answer Functions
         async function calculateAndShowSimilarity() {
-            if (!gameState.questionPhoto || !gameState.currentPhoto) return;
+            if (!gameState.currentChallenge || !gameState.currentPhoto) return;
             
-            const similarity = await calculateImageSimilarity(gameState.questionPhoto, gameState.currentPhoto);
+            const similarity = await calculateImageSimilarity(
+                gameState.currentChallenge.photoUrl, 
+                gameState.currentPhoto
+            );
             
             document.getElementById('similarityMeter').style.display = 'block';
             const fill = document.getElementById('similarityFill');
@@ -1083,6 +1065,7 @@
             const roundScore = 100 + timeBonus + similarityBonus;
             gameState.score += roundScore;
             
+            // Update player score
             const currentPlayer = gameState.players.find(p => p.isCurrent);
             if (currentPlayer) {
                 currentPlayer.score = gameState.score;
@@ -1107,39 +1090,36 @@
             updateLeaderboard();
             updatePlayersList();
             
-            showToast(`🎉 SCORE +${roundScore}`);
+            showToast(`🎉 +${roundScore} POINTS`);
         }
 
         // Next Round
         function nextRound() {
             gameState.level++;
-            gameState.phase = 'takingQuestion';
+            gameState.phase = 'matching';
             gameState.currentPhoto = null;
             gameState.lastResult = null;
+            gameState.currentChallenge = null;
             
             updateSteps(1);
-            updatePhase('CAPTURE TARGET');
-            
-            const questionTime = Math.min(
-                GAME_CONFIG.baseQuestionTime + (gameState.level - 1) * 10,
-                60
-            );
-            startTimer(questionTime);
+            updatePhase('MATCHING');
             
             document.getElementById('targetImg').style.display = 'none';
             document.getElementById('targetPlaceholder').style.display = 'flex';
-            document.getElementById('questionPreviewContainer').style.display = 'none';
             document.getElementById('photoPreviewContainer').style.display = 'none';
             document.getElementById('similarityMeter').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
             document.getElementById('questionOwner').textContent = '';
-            
-            document.getElementById('confirmQuestionBtn').style.display = 'none';
             document.getElementById('submitAnswerBtn').style.display = 'none';
             document.getElementById('nextRoundBtn').style.display = 'none';
             document.getElementById('takePhotoBtn').disabled = false;
             
-            showToast(`🌟 LEVEL ${gameState.level}`);
+            showToast(`🔍 FINDING NEXT CHALLENGE...`);
+            
+            // Get new challenge
+            setTimeout(() => {
+                receiveChallenge();
+            }, 2000);
         }
 
         // Timer Functions
@@ -1165,6 +1145,7 @@
             if (gameState.timerInterval) {
                 clearInterval(gameState.timerInterval);
             }
+            document.getElementById('timer').textContent = '--';
         }
 
         function updateTimerDisplay() {
@@ -1180,18 +1161,8 @@
 
         function handleTimeout() {
             stopTimer();
-            
-            if (gameState.phase === 'takingQuestion') {
-                showToast('⏰ TIME OUT', 'warning');
-                if (gameState.currentPhoto) {
-                    confirmQuestion();
-                } else {
-                    nextRound();
-                }
-            } else if (gameState.phase === 'answering') {
-                showToast('⏰ TIME OUT', 'warning');
-                nextRound();
-            }
+            showToast('⏰ TIME OUT', 'warning');
+            nextRound();
         }
 
         // UI Update Functions
