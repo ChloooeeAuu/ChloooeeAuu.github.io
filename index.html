@@ -22,9 +22,6 @@
             background: #000;
             color: white;
             -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
         }
 
         /* 背景效果 */
@@ -57,19 +54,6 @@
             z-index: -1;
         }
 
-        .cyber-bg::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, 
-                rgba(255, 51, 51, 0.1) 0%, 
-                transparent 70%);
-            z-index: -1;
-        }
-
         .scan-line {
             position: fixed;
             top: 0;
@@ -99,7 +83,6 @@
             z-index: 9;
         }
 
-        /* 主要容器 - 手機全屏 */
         .container {
             position: relative;
             width: 100vw;
@@ -114,14 +97,12 @@
             padding: 20px;
         }
 
-        /* 開場畫面 */
         .start-screen {
             width: 100%;
             text-align: center;
             animation: fadeIn 2s ease;
         }
 
-        /* 新聞風格文字 */
         .news-text {
             font-size: clamp(0.8rem, 4vw, 1.2rem);
             letter-spacing: 4px;
@@ -131,7 +112,6 @@
             animation: flicker 3s infinite;
         }
 
-        /* 主要標題 - 手機版調整 */
         .main-title {
             margin-bottom: 30px;
         }
@@ -169,7 +149,6 @@
             letter-spacing: 8px;
         }
 
-        /* 開始按鈕 - 手機版優化 */
         .start-button {
             margin-top: 40px;
             width: 100%;
@@ -195,8 +174,6 @@
             overflow: hidden;
             animation: pulse 2s infinite;
             -webkit-appearance: none;
-            appearance: none;
-            border-radius: 0;
         }
 
         .press-to-start:active {
@@ -205,7 +182,6 @@
             transform: scale(0.95);
         }
 
-        /* 遊戲簡介畫面 - 手機版 */
         .intro-screen {
             display: none;
             width: 100%;
@@ -227,25 +203,20 @@
         }
 
         .game-title {
-            font-size: clamp(1.8rem, 7vw, 3rem);
+            font-size: clamp(2rem, 8vw, 3.5rem);
             color: #ff3333;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            word-break: break-word;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
         }
 
         .game-description {
-            font-size: clamp(0.9rem, 4vw, 1.2rem);
-            line-height: 1.6;
-            margin-bottom: 30px;
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            line-height: 1.8;
+            margin-bottom: 40px;
             color: rgba(255, 255, 255, 0.9);
-            text-align: left;
-            padding: 0 10px;
-        }
-
-        .game-description p {
-            margin: 15px 0;
+            text-align: center;
         }
 
         .highlight {
@@ -253,11 +224,10 @@
             font-weight: 700;
         }
 
-        /* 拍照按鈕 - 手機版 */
         .take-photo-btn {
             width: 100%;
             max-width: 300px;
-            margin: 20px auto 0;
+            margin: 0 auto;
             background: transparent;
             border: 3px solid #ff3333;
             color: white;
@@ -269,11 +239,7 @@
             letter-spacing: 4px;
             font-family: 'Orbitron', sans-serif;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
             -webkit-appearance: none;
-            appearance: none;
-            border-radius: 0;
         }
 
         .take-photo-btn:active {
@@ -282,7 +248,6 @@
             transform: scale(0.95);
         }
 
-        /* 動畫效果 */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -316,31 +281,14 @@
             50% { opacity: 1; }
         }
 
-        /* 橫屏模式調整 */
         @media (orientation: landscape) and (max-height: 500px) {
-            .main-title {
-                margin-bottom: 15px;
-            }
-            
-            .title-line {
-                font-size: clamp(1.5rem, 8vh, 2.5rem);
-            }
-            
-            .title-line.half-hour {
-                font-size: clamp(1.8rem, 9vh, 3rem);
-            }
-            
-            .press-to-start {
-                padding: 10px 20px;
-                font-size: clamp(1rem, 5vh, 1.5rem);
-            }
-            
-            .start-button {
-                margin-top: 20px;
-            }
+            .main-title { margin-bottom: 15px; }
+            .title-line { font-size: clamp(1.5rem, 8vh, 2.5rem); }
+            .title-line.half-hour { font-size: clamp(1.8rem, 9vh, 3rem); }
+            .press-to-start { padding: 10px 20px; font-size: clamp(1rem, 5vh, 1.5rem); }
+            .start-button { margin-top: 20px; }
         }
 
-        /* 安全區域適配 */
         @supports (padding: max(0px)) {
             .container {
                 padding-left: max(20px, env(safe-area-inset-left));
@@ -357,14 +305,13 @@
     <div class="noise"></div>
 
     <div class="container">
-        <!-- 開場畫面 -->
         <div class="start-screen" id="startScreen">
             <div class="news-text">NEWS NEWS</div>
             
             <div class="main-title">
-                <div class="title-line half-hour">HALF HOUR</div>
-                <div class="title-line terminus">TERMINUS</div>
-                <div class="title-line human">HUMAN</div>
+                <div class="title-line half-hour">MATCH</div>
+                <div class="title-line terminus">AR!</div>
+                <div class="title-line human">PHOTO MISSION</div>
             </div>
 
             <div class="start-button">
@@ -372,28 +319,18 @@
             </div>
         </div>
 
-        <!-- 遊戲簡介畫面 -->
         <div class="intro-screen" id="introScreen">
             <div class="intro-content">
-                <h1 class="game-title">Match AR!</h1>
+                <h1 class="game-title">MATCH AR!</h1>
                 
                 <div class="game-description">
-                    <p>🎯 <span class="highlight">GAME RULES</span></p>
-                    <p>In a world where time is running out,<br>
-                    you have only <span class="highlight">HALF HOUR</span> to reach the <span class="highlight">TERMINUS</span>.</p>
-                    
-                    <p>📸 <span class="highlight">HOW TO PLAY</span></p>
-                    <p>• Take photos of your surroundings<br>
-                    • Find matching locations from other players<br>
-                    • Score points by matching exact angles and positions<br>
-                    • Time decreases as levels increase</p>
-                    
-                    <p>⏰ <span class="highlight">TIME MECHANICS</span></p>
-                    <p>Level 1: 30s to take photo / 60s to find match<br>
-                    Each level becomes more challenging...</p>
+                    <p>📸 <span class="highlight">AUGMENTED REALITY PHOTO MISSION</span></p>
+                    <p>Take photos and match with<br>
+                    other players' shots<br>
+                    from around the world</p>
                 </div>
 
-                <button class="take-photo-btn" onclick="startGame()">TAKE PHOTO</button>
+                <button class="take-photo-btn" onclick="startGame()">ENTER AR</button>
             </div>
         </div>
     </div>
@@ -414,7 +351,6 @@
             }
         });
 
-        // 防止雙擊縮放
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length > 1) {
                 e.preventDefault();
