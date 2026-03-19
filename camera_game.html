@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Match AR! - MISSION</title>
+    <title>Match AR! - MULTIPLAYER</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
@@ -82,7 +82,7 @@
         }
 
         .status-bar::before {
-            content: 'SYSTEM';
+            content: 'ROOM';
             position: absolute;
             top: -8px;
             left: 10px;
@@ -350,6 +350,11 @@
             pointer-events: none;
         }
 
+        .btn.small {
+            padding: 10px;
+            font-size: 14px;
+        }
+
         .photo-actions {
             display: flex;
             gap: 10px;
@@ -375,11 +380,20 @@
             color: #ff3333;
             margin-bottom: 12px;
             font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-code {
+            color: #ff9900;
+            font-size: 12px;
+            letter-spacing: 2px;
         }
 
         .players-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
         }
 
@@ -388,6 +402,16 @@
             border: 1px solid #ff3333;
             padding: 10px;
             text-align: center;
+            position: relative;
+        }
+
+        .player-card.current {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .player-card.waiting {
+            opacity: 0.5;
         }
 
         .player-avatar {
@@ -409,39 +433,50 @@
             font-size: 12px;
         }
 
-        .player-score {
+        .player-status {
+            color: #ff9900;
+            font-size: 10px;
+        }
+
+        .player-status.ready {
+            color: #00ff00;
+        }
+
+        /* Challenge Queue */
+        .challenge-queue {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 51, 51, 0.05);
+            border: 1px solid #ff3333;
+        }
+
+        .queue-title {
             color: #ff3333;
-            font-weight: 700;
-            font-size: 11px;
+            font-size: 12px;
+            margin-bottom: 8px;
         }
 
-        /* Leaderboard */
-        .leaderboard {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            border-top: 2px solid #ff3333;
-            padding: 15px;
-            z-index: 100;
-            transition: bottom 0.3s ease;
-        }
-
-        .leaderboard.show {
-            bottom: 0;
-        }
-
-        .leaderboard h3 {
-            color: #ff3333;
-            margin-bottom: 10px;
-        }
-
-        .leaderboard-item {
+        .queue-items {
             display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 51, 51, 0.2);
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .queue-item {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 1px solid #ff3333;
+        }
+
+        .queue-item.active {
+            border-color: #00ff00;
+            animation: pulse 1s infinite;
         }
 
         /* Result Box */
@@ -567,34 +602,28 @@
         <a href="index.html">← BACK</a>
     </div>
 
-    <!-- Leaderboard -->
-    <div class="leaderboard" id="leaderboard">
-        <h3>▶ GLOBAL RANKING</h3>
-        <div id="leaderboardList"></div>
-    </div>
-
     <div class="game-container">
         <!-- Status Bar -->
         <div class="status-bar">
             <div class="level-info">
-                <div class="level-badge" id="currentLevel">LV 01</div>
-                <div class="phase-badge" id="phaseIndicator">READY</div>
+                <div class="level-badge" id="currentLevel">ROOM</div>
+                <div class="phase-badge" id="phaseIndicator">WAITING</div>
             </div>
             <div class="timer" id="timer">--</div>
         </div>
 
         <!-- Camera Init Button -->
         <div class="camera-init" id="cameraInit">
-            <button onclick="startCamera()" id="cameraInitBtn">
-                ▶ JOIN AR MATCH
+            <button onclick="joinRoom()" id="cameraInitBtn">
+                ▶ JOIN MULTIPLAYER ROOM
             </button>
-            <p>// CONNECT TO GLOBAL PLAYERS //</p>
+            <p>// CONNECT WITH REAL PLAYERS //</p>
         </div>
 
         <!-- Step Indicator -->
         <div class="step-indicator" id="stepIndicator" style="display: none;">
-            <div class="step" id="step1">MATCHING</div>
-            <div class="step" id="step2">RECEIVED</div>
+            <div class="step" id="step1">WAITING</div>
+            <div class="step" id="step2">CHALLENGE</div>
             <div class="step" id="step3">CAPTURE</div>
             <div class="step" id="step4">SUBMIT</div>
             <div class="step" id="step5">SCORE</div>
@@ -605,15 +634,21 @@
             <!-- Question Area -->
             <div class="question-area">
                 <div class="section-title">
-                    <span>> CHALLENGE FROM</span>
+                    <span>> CURRENT CHALLENGE</span>
                     <span id="questionOwner"></span>
                 </div>
                 <div class="image-container" id="targetImage">
-                    <img id="targetImg" src="" alt="TARGET" style="display: none;">
+                    <img id="targetImg" src="" alt="CHALLENGE" style="display: none;">
                     <div class="placeholder" id="targetPlaceholder">
-                        <i>🌍</i>
-                        <p>MATCHING GLOBAL PLAYERS...</p>
+                        <i>👥</i>
+                        <p>WAITING FOR PLAYERS...</p>
                     </div>
+                </div>
+
+                <!-- Challenge Queue -->
+                <div class="challenge-queue" id="challengeQueue" style="display: none;">
+                    <div class="queue-title">CHALLENGES QUEUE</div>
+                    <div class="queue-items" id="queueItems"></div>
                 </div>
 
                 <!-- Similarity Meter -->
@@ -656,19 +691,22 @@
                 <!-- Photo Actions -->
                 <div class="photo-actions">
                     <button class="btn" id="takePhotoBtn" onclick="takePhoto()" disabled>📸 CAPTURE</button>
+                    <button class="btn" id="submitPhotoBtn" onclick="submitPhoto()" disabled style="display: none;">⬆ SUBMIT</button>
                 </div>
             </div>
         </div>
 
         <!-- Game Control Buttons -->
         <div class="game-controls" id="gameControls" style="display: none;">
-            <button class="btn" id="submitAnswerBtn" onclick="submitAnswer()" style="display: none;">⬆ SUBMIT MATCH</button>
-            <button class="btn" id="nextRoundBtn" onclick="nextRound()" style="display: none;">⏭ NEXT CHALLENGE</button>
+            <button class="btn" id="nextChallengeBtn" onclick="nextChallenge()" style="display: none;">⏭ NEXT CHALLENGE</button>
         </div>
 
         <!-- Players Section -->
         <div class="players-section" id="playersSection" style="display: none;">
-            <h3>> ACTIVE PLAYERS</h3>
+            <h3>
+                <span>> ROOM (MAX 4)</span>
+                <span class="room-code" id="roomCode">ROOM-001</span>
+            </h3>
             <div class="players-grid" id="playersList"></div>
         </div>
     </div>
@@ -679,106 +717,241 @@
     <script>
         // Game Configuration
         const GAME_CONFIG = {
-            matchTime: 45,
+            maxPlayers: 4,
+            challengeTime: 45,
             similarityThreshold: 70,
             goodThreshold: 85,
-            perfectThreshold: 95
+            perfectThreshold: 95,
+            roomPrefix: 'AR'
         };
 
         // Game State
         let gameState = {
-            level: 1,
+            roomId: null,
+            playerId: null,
+            playerName: null,
             phase: 'idle',
             timer: 0,
             timerInterval: null,
             currentChallenge: null,
             currentPhoto: null,
             players: [],
-            currentPlayerId: 'player1',
-            score: 0,
+            challenges: [], // 其他玩家出的題目
+            challengeQueue: [],
+            currentChallengeIndex: 0,
             camera: null,
             cameraActive: false,
-            lastResult: null
+            lastResult: null,
+            score: 0
         };
-
-        // Mock Global Players Database (模擬全球玩家)
-        const globalPlayers = [
-            { id: 'p1001', name: 'TOKYO_HUNTER', avatar: '🇯🇵', score: 1250 },
-            { id: 'p1002', name: 'NY_PHOTO', avatar: '🇺🇸', score: 980 },
-            { id: 'p1003', name: 'LONDON_FOX', avatar: '🇬🇧', score: 1560 },
-            { id: 'p1004', name: 'PARIS_SHOT', avatar: '🇫🇷', score: 820 },
-            { id: 'p1005', name: 'BERLIN_VIEW', avatar: '🇩🇪', score: 1100 },
-            { id: 'p1006', name: 'SEOUL_SNAP', avatar: '🇰🇷', score: 1430 },
-            { id: 'p1007', name: 'SHANGHAI_ARK', avatar: '🇨🇳', score: 1680 },
-            { id: 'p1008', name: 'SING_LION', avatar: '🇸🇬', score: 920 }
-        ];
-
-        // Mock Challenge Photos Database (模擬全球玩家的照片)
-        const challengePhotos = [
-            'https://picsum.photos/400/300?random=101',
-            'https://picsum.photos/400/300?random=102',
-            'https://picsum.photos/400/300?random=103',
-            'https://picsum.photos/400/300?random=104',
-            'https://picsum.photos/400/300?random=105',
-            'https://picsum.photos/400/300?random=106',
-            'https://picsum.photos/400/300?random=107',
-            'https://picsum.photos/400/300?random=108'
-        ];
-
-        // Current online players (隨機選取3個全球玩家)
-        let onlinePlayers = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            initGame();
+            generateRoomId();
         });
 
-        function initGame() {
-            // 隨機選取3個線上玩家
-            onlinePlayers = shuffleArray(globalPlayers).slice(0, 3);
-            gameState.players = onlinePlayers.map((p, index) => ({
-                id: p.id,
-                name: p.name,
-                avatar: p.avatar,
-                score: p.score,
-                isCurrent: index === 0
-            }));
+        // Generate random room ID
+        function generateRoomId() {
+            const randomNum = Math.floor(Math.random() * 900 + 100);
+            gameState.roomId = GAME_CONFIG.roomPrefix + '-' + randomNum;
+            document.getElementById('roomCode').textContent = gameState.roomId;
+        }
+
+        // Generate random player name
+        function generatePlayerName() {
+            const names = ['HUNTER', 'NEO', 'GHOST', 'VIPER', 'PHANTOM', 'SHADOW'];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            const randomNum = Math.floor(Math.random() * 100);
+            return randomName + randomNum;
+        }
+
+        // Join multiplayer room
+        async function joinRoom() {
+            const joinBtn = document.getElementById('cameraInitBtn');
+            joinBtn.disabled = true;
+            joinBtn.textContent = 'CONNECTING...';
             
-            updateLeaderboard();
+            try {
+                showToast('CONNECTING TO ROOM...');
+                
+                // Start camera first
+                await startCamera();
+                
+                // Generate player info
+                gameState.playerId = 'player_' + Date.now();
+                gameState.playerName = generatePlayerName();
+                
+                // Initialize players (包括自己)
+                initRoomPlayers();
+                
+                // Show game interface
+                document.getElementById('cameraInit').style.display = 'none';
+                document.getElementById('stepIndicator').style.display = 'flex';
+                document.getElementById('gameMain').style.display = 'flex';
+                document.getElementById('gameControls').style.display = 'flex';
+                document.getElementById('playersSection').style.display = 'block';
+                
+                // Start waiting for players
+                startWaiting();
+                
+                showToast(`✅ JOINED ROOM ${gameState.roomId}`);
+                
+            } catch (error) {
+                console.error('Join room error:', error);
+                showToast('❌ CONNECTION FAILED', 'error');
+            } finally {
+                joinBtn.disabled = false;
+                joinBtn.textContent = '▶ JOIN MULTIPLAYER ROOM';
+            }
+        }
+
+        // Initialize room players (模擬其他玩家加入)
+        function initRoomPlayers() {
+            // 自己
+            const currentPlayer = {
+                id: gameState.playerId,
+                name: gameState.playerName,
+                avatar: getRandomAvatar(),
+                status: 'ready',
+                score: 0,
+                isCurrent: true,
+                hasChallenge: false
+            };
+            
+            // 模擬其他3個玩家（在真實環境中，這些會是其他連線的用戶）
+            const mockPlayers = [
+                { id: 'player2', name: 'NEO42', avatar: '👾', status: 'waiting', score: 0, hasChallenge: false },
+                { id: 'player3', name: 'GHOST77', avatar: '👻', status: 'waiting', score: 0, hasChallenge: false },
+                { id: 'player4', name: 'VIPER23', avatar: '🐍', status: 'waiting', score: 0, hasChallenge: false }
+            ];
+            
+            gameState.players = [currentPlayer, ...mockPlayers];
             updatePlayersList();
         }
 
-        // Fisher-Yates Shuffle
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+        function getRandomAvatar() {
+            const avatars = ['👤', '👾', '🤖', '👻', '🐉', '🦊', '🐺', '🦅'];
+            return avatars[Math.floor(Math.random() * avatars.length)];
         }
 
-        // Get random challenge
-        function getRandomChallenge() {
-            const randomPlayer = onlinePlayers[Math.floor(Math.random() * onlinePlayers.length)];
-            const randomPhoto = challengePhotos[Math.floor(Math.random() * challengePhotos.length)];
+        // Start waiting for players
+        function startWaiting() {
+            gameState.phase = 'waiting';
+            updateSteps(1);
+            updatePhase('WAITING FOR PLAYERS');
             
-            return {
-                playerName: randomPlayer.name,
-                playerAvatar: randomPlayer.avatar,
-                photoUrl: randomPhoto,
-                timestamp: new Date().toLocaleTimeString()
-            };
+            showToast('⏳ WAITING FOR CHALLENGES...');
+            
+            // 模擬其他玩家陸續出題
+            simulatePlayersSubmitting();
+        }
+
+        // 模擬其他玩家出題（在真實環境中，這會來自WebSocket）
+        function simulatePlayersSubmitting() {
+            let playerIndex = 1;
+            
+            const interval = setInterval(() => {
+                if (playerIndex >= gameState.players.length) {
+                    clearInterval(interval);
+                    
+                    // 所有玩家都出題了，開始配對
+                    setTimeout(() => {
+                        startMatching();
+                    }, 1000);
+                    
+                    return;
+                }
+                
+                const player = gameState.players[playerIndex];
+                player.status = 'ready';
+                player.hasChallenge = true;
+                
+                // 模擬玩家照片（使用隨機圖片）
+                const challengePhoto = 'https://picsum.photos/400/300?random=' + Date.now() + playerIndex;
+                
+                // 加入挑戰佇列
+                gameState.challenges.push({
+                    playerId: player.id,
+                    playerName: player.name,
+                    playerAvatar: player.avatar,
+                    photoUrl: challengePhoto,
+                    timestamp: Date.now()
+                });
+                
+                updatePlayersList();
+                showToast(`📸 ${player.name} SUBMITTED CHALLENGE`);
+                
+                playerIndex++;
+            }, 2000);
+        }
+
+        // Start matching
+        function startMatching() {
+            if (gameState.challenges.length === 0) {
+                showToast('NO CHALLENGES AVAILABLE', 'error');
+                return;
+            }
+            
+            // 隨機排序挑戰
+            gameState.challengeQueue = shuffleArray([...gameState.challenges]);
+            gameState.currentChallengeIndex = 0;
+            
+            updateQueueDisplay();
+            
+            // 開始第一個挑戰
+            receiveChallenge();
+        }
+
+        // Receive challenge
+        function receiveChallenge() {
+            if (gameState.currentChallengeIndex >= gameState.challengeQueue.length) {
+                // 所有挑戰都完成了
+                showToast('🏆 ALL CHALLENGES COMPLETED');
+                return;
+            }
+            
+            const challenge = gameState.challengeQueue[gameState.currentChallengeIndex];
+            gameState.currentChallenge = challenge;
+            gameState.currentPhoto = null;
+            gameState.lastResult = null;
+            
+            document.getElementById('targetImg').src = challenge.photoUrl;
+            document.getElementById('targetImg').style.display = 'block';
+            document.getElementById('targetPlaceholder').style.display = 'none';
+            document.getElementById('questionOwner').textContent = `👤 ${challenge.playerName} ${challenge.playerAvatar}`;
+            
+            // 更新佇列顯示
+            updateQueueDisplay();
+            
+            gameState.phase = 'challenge';
+            updateSteps(2);
+            updatePhase('CHALLENGE READY');
+            
+            showToast(`📸 CHALLENGE FROM ${challenge.playerName}`);
+            
+            // Start capture phase
+            setTimeout(() => {
+                startCapturePhase();
+            }, 2000);
+        }
+
+        // Start capture phase
+        function startCapturePhase() {
+            gameState.phase = 'capture';
+            updateSteps(3);
+            updatePhase('CAPTURE MATCH');
+            
+            startTimer(GAME_CONFIG.challengeTime);
+            
+            document.getElementById('takePhotoBtn').disabled = false;
+            document.getElementById('submitPhotoBtn').style.display = 'inline-block';
+            
+            showToast('🎯 MATCH THE ANGLE');
         }
 
         // Camera Functions
         async function startCamera() {
-            const cameraBtn = document.getElementById('cameraInitBtn');
-            cameraBtn.disabled = true;
-            cameraBtn.textContent = 'CONNECTING...';
-            
             try {
-                showToast('CONNECTING TO GLOBAL NETWORK...');
-                
                 const constraints = {
                     video: {
                         width: { ideal: 1280 },
@@ -811,85 +984,12 @@
                 cameraStatus.className = 'online';
                 document.getElementById('takePhotoBtn').disabled = false;
                 
-                // Show game interface
-                document.getElementById('cameraInit').style.display = 'none';
-                document.getElementById('stepIndicator').style.display = 'flex';
-                document.getElementById('gameMain').style.display = 'flex';
-                document.getElementById('gameControls').style.display = 'flex';
-                document.getElementById('playersSection').style.display = 'block';
-                
-                // Start matching with global players
-                startMatching();
-                
-                showToast('✅ CONNECTED TO ' + onlinePlayers.length + ' PLAYERS');
+                return true;
                 
             } catch (error) {
                 console.error('Camera error:', error);
-                let errorMessage = 'CONNECTION ERROR';
-                if (error.name === 'NotAllowedError') {
-                    errorMessage = 'ACCESS DENIED';
-                } else if (error.name === 'NotFoundError') {
-                    errorMessage = 'NO CAMERA FOUND';
-                }
-                showToast('❌ ' + errorMessage, 'error');
-                
-                const cameraStatus = document.getElementById('cameraStatus');
-                cameraStatus.textContent = 'ERROR';
-                cameraStatus.className = 'offline';
-            } finally {
-                cameraBtn.disabled = false;
-                cameraBtn.textContent = '▶ JOIN AR MATCH';
+                throw error;
             }
-        }
-
-        // Start matching
-        function startMatching() {
-            gameState.phase = 'matching';
-            updateSteps(1);
-            updatePhase('MATCHING');
-            
-            showToast('🔍 FINDING CHALLENGES...');
-            
-            // Simulate network delay
-            setTimeout(() => {
-                receiveChallenge();
-            }, 2000);
-        }
-
-        // Receive random challenge
-        function receiveChallenge() {
-            const challenge = getRandomChallenge();
-            gameState.currentChallenge = challenge;
-            
-            document.getElementById('targetImg').src = challenge.photoUrl;
-            document.getElementById('targetImg').style.display = 'block';
-            document.getElementById('targetPlaceholder').style.display = 'none';
-            document.getElementById('questionOwner').textContent = `👤 ${challenge.playerName} ${challenge.playerAvatar}`;
-            
-            gameState.phase = 'received';
-            updateSteps(2);
-            updatePhase('CHALLENGE RECEIVED');
-            
-            showToast(`📸 CHALLENGE FROM ${challenge.playerName}`);
-            
-            // Start capture phase
-            setTimeout(() => {
-                startCapturePhase();
-            }, 2000);
-        }
-
-        // Start capture phase
-        function startCapturePhase() {
-            gameState.phase = 'capture';
-            updateSteps(3);
-            updatePhase('CAPTURE MATCH');
-            
-            startTimer(GAME_CONFIG.matchTime);
-            
-            document.getElementById('takePhotoBtn').disabled = false;
-            document.getElementById('submitAnswerBtn').style.display = 'inline-block';
-            
-            showToast('🎯 MATCH THE ANGLE');
         }
 
         // Photo Functions
@@ -931,13 +1031,12 @@
                 const img2 = new Image();
                 let loadedCount = 0;
                 
-                // 允許跨域
                 img1.crossOrigin = 'anonymous';
                 
                 img1.onload = () => {
                     loadedCount++;
                     if (loadedCount === 2) {
-                        const similarity = compareImagesFriendly(img1, img2);
+                        const similarity = compareImages(img1, img2);
                         resolve(similarity);
                     }
                 };
@@ -945,7 +1044,7 @@
                 img2.onload = () => {
                     loadedCount++;
                     if (loadedCount === 2) {
-                        const similarity = compareImagesFriendly(img1, img2);
+                        const similarity = compareImages(img1, img2);
                         resolve(similarity);
                     }
                 };
@@ -955,7 +1054,7 @@
             });
         }
 
-        function compareImagesFriendly(img1, img2) {
+        function compareImages(img1, img2) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
@@ -970,19 +1069,13 @@
             ctx.drawImage(img2, 0, 0, size, size);
             const features2 = extractFeatures(ctx, size);
             
-            let totalDifference = 0;
-            let maxDifference = 0;
-            
+            let totalDiff = 0;
             for (let i = 0; i < features1.length; i++) {
-                const diff = Math.abs(features1[i] - features2[i]);
-                totalDifference += diff;
-                maxDifference = Math.max(maxDifference, diff);
+                totalDiff += Math.abs(features1[i] - features2[i]);
             }
             
-            const avgDifference = totalDifference / features1.length;
-            let similarity = 100 - (avgDifference * 100 / 255);
-            const maxDiffPenalty = Math.min(maxDifference / 255 * 30, 30);
-            similarity = similarity - maxDiffPenalty;
+            const avgDiff = totalDiff / features1.length;
+            let similarity = 100 - (avgDiff * 100 / 255);
             
             return Math.round(Math.max(0, Math.min(100, similarity)));
         }
@@ -1036,22 +1129,15 @@
             };
             
             if (similarity >= GAME_CONFIG.similarityThreshold) {
+                document.getElementById('submitPhotoBtn').disabled = false;
                 showToast(`✅ MATCH ${similarity}%`, 'success');
             } else {
+                document.getElementById('submitPhotoBtn').disabled = true;
                 showToast(`📸 NEED ${GAME_CONFIG.similarityThreshold}%`, 'warning');
             }
         }
 
-        async function submitAnswer() {
-            if (!gameState.currentPhoto) {
-                showToast('CAPTURE FIRST', 'error');
-                return;
-            }
-
-            if (!gameState.lastResult) {
-                await calculateAndShowSimilarity();
-            }
-
+        function submitPhoto() {
             if (!gameState.lastResult || !gameState.lastResult.isPass) {
                 showToast('❌ MATCH FAILED', 'error');
                 return;
@@ -1082,44 +1168,43 @@
             document.getElementById('resultMessage').innerHTML = resultMessage;
             document.getElementById('scoreDisplay').textContent = `+${roundScore}`;
             
-            document.getElementById('submitAnswerBtn').style.display = 'none';
+            document.getElementById('submitPhotoBtn').style.display = 'none';
             document.getElementById('takePhotoBtn').disabled = true;
-            document.getElementById('nextRoundBtn').style.display = 'inline-block';
+            document.getElementById('nextChallengeBtn').style.display = 'inline-block';
             
             stopTimer();
-            updateLeaderboard();
             updatePlayersList();
             
             showToast(`🎉 +${roundScore} POINTS`);
         }
 
-        // Next Round
-        function nextRound() {
-            gameState.level++;
-            gameState.phase = 'matching';
+        // Next Challenge
+        function nextChallenge() {
+            gameState.currentChallengeIndex++;
+            
+            if (gameState.currentChallengeIndex >= gameState.challengeQueue.length) {
+                // 所有挑戰完成
+                showToast('🏆 ALL CHALLENGES COMPLETED');
+                document.getElementById('nextChallengeBtn').style.display = 'none';
+                document.getElementById('resultBox').style.display = 'none';
+                document.getElementById('targetImg').style.display = 'none';
+                document.getElementById('targetPlaceholder').style.display = 'flex';
+                document.getElementById('targetPlaceholder').innerHTML = '<i>🏆</i><p>ALL CHALLENGES COMPLETED</p>';
+                return;
+            }
+            
+            // Reset for next challenge
             gameState.currentPhoto = null;
             gameState.lastResult = null;
-            gameState.currentChallenge = null;
             
-            updateSteps(1);
-            updatePhase('MATCHING');
-            
-            document.getElementById('targetImg').style.display = 'none';
-            document.getElementById('targetPlaceholder').style.display = 'flex';
             document.getElementById('photoPreviewContainer').style.display = 'none';
             document.getElementById('similarityMeter').style.display = 'none';
             document.getElementById('resultBox').style.display = 'none';
-            document.getElementById('questionOwner').textContent = '';
-            document.getElementById('submitAnswerBtn').style.display = 'none';
-            document.getElementById('nextRoundBtn').style.display = 'none';
-            document.getElementById('takePhotoBtn').disabled = false;
+            document.getElementById('nextChallengeBtn').style.display = 'none';
+            document.getElementById('submitPhotoBtn').style.display = 'none';
             
-            showToast(`🔍 FINDING NEXT CHALLENGE...`);
-            
-            // Get new challenge
-            setTimeout(() => {
-                receiveChallenge();
-            }, 2000);
+            // Receive next challenge
+            receiveChallenge();
         }
 
         // Timer Functions
@@ -1162,7 +1247,7 @@
         function handleTimeout() {
             stopTimer();
             showToast('⏰ TIME OUT', 'warning');
-            nextRound();
+            nextChallenge();
         }
 
         // UI Update Functions
@@ -1182,33 +1267,41 @@
 
         function updatePhase(text) {
             document.getElementById('phaseIndicator').textContent = text;
-            document.getElementById('currentLevel').textContent = `LV ${gameState.level.toString().padStart(2, '0')}`;
         }
 
         function updatePlayersList() {
             const playersList = document.getElementById('playersList');
             if (playersList) {
                 playersList.innerHTML = gameState.players.map(player => `
-                    <div class="player-card">
+                    <div class="player-card ${player.isCurrent ? 'current' : ''} ${player.status === 'waiting' ? 'waiting' : ''}">
                         <div class="player-avatar">${player.avatar}</div>
-                        <div class="player-name">${player.name}</div>
+                        <div class="player-name">${player.name} ${player.isCurrent ? '(YOU)' : ''}</div>
+                        <div class="player-status ${player.status}">${player.hasChallenge ? '📸 READY' : '⏳ WAITING'}</div>
                         <div class="player-score">${player.score}</div>
                     </div>
                 `).join('');
             }
         }
 
-        function updateLeaderboard() {
-            const leaderboardList = document.getElementById('leaderboardList');
-            if (leaderboardList) {
-                const sortedPlayers = [...gameState.players].sort((a, b) => b.score - a.score);
-                leaderboardList.innerHTML = sortedPlayers.map((player, index) => `
-                    <div class="leaderboard-item">
-                        <span>${index + 1}. ${player.avatar} ${player.name}</span>
-                        <span>${player.score}</span>
-                    </div>
-                `).join('');
+        function updateQueueDisplay() {
+            const queueContainer = document.getElementById('queueItems');
+            if (!queueContainer) return;
+            
+            queueContainer.innerHTML = gameState.challengeQueue.map((challenge, index) => `
+                <div class="queue-item ${index === gameState.currentChallengeIndex ? 'active' : ''}">
+                    ${challenge.playerAvatar}
+                </div>
+            `).join('');
+            
+            document.getElementById('challengeQueue').style.display = 'block';
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
         }
 
         function showToast(message, type = 'success') {
@@ -1239,16 +1332,6 @@
             if (gameState.timerInterval) {
                 clearInterval(gameState.timerInterval);
             }
-        });
-
-        // Toggle leaderboard on click
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.leaderboard')) return;
-            const leaderboard = document.getElementById('leaderboard');
-            leaderboard.classList.toggle('show');
-            setTimeout(() => {
-                leaderboard.classList.remove('show');
-            }, 3000);
         });
     </script>
 </body>
