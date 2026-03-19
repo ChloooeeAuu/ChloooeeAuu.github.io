@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HALF HOUR TERMINUS - GAME</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* 全屏背景 - 使用照片 */
+        .fullscreen-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/jpeg;base64,这里放你的照片base64编码');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.7) contrast(1.2);
+            z-index: -1;
+        }
+
+        /* 由於無法直接使用你的照片，我將用CSS模擬類似的風格 */
+        .fullscreen-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(0,0,0,0.8) 0%, 
+                rgba(0,0,0,0.4) 50%,
+                rgba(0,0,0,0.8) 100%);
+            z-index: 0;
+        }
+
+        .fullscreen-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 20px,
+                rgba(255, 255, 255, 0.03) 20px,
+                rgba(255, 255, 255, 0.03) 40px
+            );
+            z-index: 1;
+        }
+
+        /* 主要容器 */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            color: white;
+            text-align: center;
+        }
+
+        /* 開場畫面 */
+        .start-screen {
+            text-align: center;
+            animation: fadeIn 2s ease;
+        }
+
+        /* 新聞風格文字 */
+        .news-text {
+            font-size: 1.2rem;
+            letter-spacing: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            animation: flicker 3s infinite;
+        }
+
+        /* 主要標題 - 重現照片中的文字 */
+        .main-title {
+            margin-bottom: 50px;
+        }
+
+        .title-line {
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.2;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 0, 0, 0.5),
+                0 0 30px rgba(255, 0, 0, 0.3);
+            animation: glitch 5s infinite;
+        }
+
+        .title-line.small {
+            font-size: 2.5rem;
+        }
+
+        .title-line.half-hour {
+            color: #ff3333;
+            font-size: 5rem;
+            letter-spacing: 10px;
+        }
+
+        .title-line.terminus {
+            font-size: 4.5rem;
+            color: #fff;
+            border: 3px solid rgba(255, 51, 51, 0.5);
+            padding: 0 20px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .title-line.human {
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 15px;
+        }
+
+        /* 開始按鈕 */
+        .start-button {
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .press-to-start {
+            background: transparent;
+            border: 3px solid #ff3333;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            padding: 20px 60px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: pulse 2s infinite;
+        }
+
+        .press-to-start:hover {
+            background: #ff3333;
+            color: black;
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(255, 51, 51, 0.8);
+        }
+
+        .press-to-start::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .press-to-start:hover::before {
+            left: 100%;
+        }
+
+        /* 遊戲簡介畫面 */
+        .intro-screen {
+            display: none;
+            animation: slideUp 0.8s ease;
+        }
+
+        .intro-content {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff3333;
+            padding: 50px;
+            max-width: 800px;
+            margin: 0 20px;
+            box-shadow: 0 0 50px rgba(255, 51, 51, 0.3);
+        }
+
+        .game-title {
+            font-size: 3rem;
+            color: #ff3333;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .game-description {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .game-description p {
+            margin: 15px 0;
+        }
+
+        .highlight {
+            color: #ff3333;
+            font-weight: 700;
+        }
+
+        /* 拍照按鈕 */
+        .take-photo-btn {
+            background: transparent;
+            border: 3px solid #ff3333;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 15px 40px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .take-photo-btn:hover {
+            background: #ff3333;
+            color: black;
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 51, 51, 0.6);
+        }
+
+        /* 裝飾元素 */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1),
+                rgba(0, 0, 0, 0.1) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wNCIgLz48L3N2Zz4=');
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* 動畫效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(255, 51, 51, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 51, 51, 0);
+            }
+        }
+
+        @keyframes glitch {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px rgba(255, 255, 255, 0.8),
+                    0 0 20px rgba(255, 0, 0, 0.5),
+                    0 0 30px rgba(255, 0, 0, 0.3);
+            }
+            33% {
+                text-shadow: 
+                    -2px 0 rgba(255, 0, 0, 0.8),
+                    2px 0 rgba(0, 255, 255, 0.8);
+            }
+            66% {
+                text-shadow: 
+                    2px 0 rgba(255, 0, 0, 0.8),
+                    -2px 0 rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        @keyframes flicker {
+            0%, 100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .title-line {
+                font-size: 2.5rem;
+            }
+            .title-line.half-hour {
+                font-size: 3rem;
+            }
+            .title-line.terminus {
+                font-size: 2.8rem;
+            }
+            .title-line.human {
+                font-size: 2rem;
+            }
+            .press-to-start {
+                font-size: 1.5rem;
+                padding: 15px 40px;
+            }
+            .game-title {
+                font-size: 2rem;
+            }
+            .intro-content {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title-line {
+                font-size: 1.8rem;
+            }
+            .title-line.half-hour {
+                font-size: 2.2rem;
+            }
+            .title-line.terminus {
+                font-size: 2rem;
+            }
+            .title-line.human {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景照片 -->
+    <div class="fullscreen-bg"></div>
+    
+    <!-- 裝飾效果 -->
+    <div class="scan-line"></div>
+    <div class="noise"></div>
+
+    <div class="container">
+        <!-- 開場畫面 -->
+        <div class="start-screen" id="startScreen">
+            <div class="news-text">NEWS NEWS</div>
+            
+            <div class="main-title">
+                <div class="title-line half-hour">HALF HOUR</div>
+                <div class="title-line terminus">TERMINUS</div>
+                <div class="title-line human">HUMAN</div>
+            </div>
+
+            <div class="start-button">
+                <button class="press-to-start" onclick="showIntro()">PRESS TO START</button>
+            </div>
+        </div>
+
+        <!-- 遊戲簡介畫面 -->
+        <div class="intro-screen" id="introScreen">
+            <div class="intro-content">
+                <h1 class="game-title">HALF HOUR TERMINUS</h1>
+                
+                <div class="game-description">
+                    <p>🎯 <span class="highlight">GAME RULES</span></p>
+                    <p>In a world where time is running out,<br>
+                    you have only <span class="highlight">HALF HOUR</span> to reach the <span class="highlight">TERMINUS</span>.</p>
+                    
+                    <p>📸 <span class="highlight">HOW TO PLAY</span></p>
+                    <p>• Take photos of your surroundings<br>
+                    • Find matching locations from other players<br>
+                    • Score points by matching exact angles and positions<br>
+                    • Time decreases as levels increase</p>
+                    
+                    <p>⏰ <span class="highlight">TIME MECHANICS</span></p>
+                    <p>Level 1: 30s to take photo / 60s to find match<br>
+                    Each level becomes more challenging...</p>
+                </div>
+
+                <button class="take-photo-btn" onclick="startGame()">TAKE PHOTO</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 顯示遊戲簡介
+        function showIntro() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('introScreen').style.display = 'block';
+            
+            // 添加進入動畫
+            document.getElementById('introScreen').style.animation = 'slideUp 0.8s ease';
+        }
+
+        // 開始遊戲（拍照功能）
+        function startGame() {
+            // 這裡可以連接到之前的拍照遊戲
+            window.location.href = 'camera_game.html'; // 或者直接開啟相機
+            
+            // 如果要直接在同頁面開啟相機，可以使用以下代碼：
+            /*
+            // 請求相機權限
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    // 相機開啟成功，轉到遊戲頁面
+                    window.location.href = 'game.html';
+                })
+                .catch(function(error) {
+                    alert('需要相機權限才能遊玩！');
+                });
+            */
+            
+            // 臨時提示
+            alert('即將進入拍照遊戲...');
+        }
+
+        // 鍵盤事件 - 按任意鍵也可以開始
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('startScreen').style.display !== 'none') {
+                // 如果還在開始畫面，按任意鍵顯示簡介
+                showIntro();
+            }
+        });
+
+        // 添加動態效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 模擬老電影效果
+            setInterval(function() {
+                const noise = document.querySelector('.noise');
+                noise.style.opacity = Math.random() * 0.05;
+            }, 100);
+        });
+    </script>
+</body>
+</html>
