@@ -22,9 +22,6 @@
             background: #000;
             color: white;
             -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
         }
 
         /* 背景效果 */
@@ -38,23 +35,6 @@
                 rgba(0,0,0,0.95) 0%, 
                 rgba(20,20,20,0.9) 100%);
             z-index: -2;
-        }
-
-        .cyber-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 10px,
-                rgba(255, 51, 51, 0.03) 10px,
-                rgba(255, 51, 51, 0.03) 20px
-            );
-            z-index: -1;
         }
 
         .scan-line {
@@ -74,31 +54,22 @@
             z-index: 10;
         }
 
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMiIgLz48L3N2Zz4=');
-            opacity: 0.1;
-            pointer-events: none;
-            z-index: 9;
-        }
-
-        /* 主要容器 - 手機全屏 */
+        /* 主要容器 - 手機豎屏 */
         .game-container {
             width: 100vw;
             height: 100vh;
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            padding: 15px;
+            padding-bottom: 30px;
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* 頂部狀態欄 - 手機版 */
+        /* 頂部狀態欄 */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -106,10 +77,10 @@
             padding: 12px 15px;
             background: rgba(0, 0, 0, 0.9);
             border: 1px solid #ff3333;
-            margin: 10px;
+            margin-bottom: 15px;
             position: relative;
-            box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
-            font-size: clamp(0.7rem, 3vw, 0.9rem);
+            font-size: 14px;
+            flex-shrink: 0;
         }
 
         .status-bar::before {
@@ -120,46 +91,41 @@
             background: #000;
             padding: 0 8px;
             color: #ff3333;
-            font-size: 0.6rem;
+            font-size: 10px;
             letter-spacing: 1px;
         }
 
         .level-info {
             display: flex;
             gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .level-badge, .phase-badge {
-            font-weight: 700;
-            letter-spacing: 1px;
         }
 
         .level-badge {
             color: #ff3333;
+            font-weight: 700;
         }
 
         .phase-badge {
             color: #fff;
+            font-weight: 700;
         }
 
         .timer {
-            font-size: clamp(1.5rem, 6vw, 2rem);
+            font-size: 24px;
             font-weight: 900;
             color: #ff3333;
             text-shadow: 0 0 15px rgba(255, 51, 51, 0.8);
-            letter-spacing: 2px;
         }
 
-        /* 步驟指示器 - 手機版 */
+        /* 步驟指示器 */
         .step-indicator {
             display: flex;
             justify-content: space-between;
-            margin: 10px;
+            margin-bottom: 15px;
             padding: 10px;
             background: rgba(0, 0, 0, 0.8);
             border: 1px solid #ff3333;
-            flex-wrap: wrap;
+            flex-shrink: 0;
         }
 
         .step {
@@ -168,9 +134,7 @@
             padding: 5px;
             color: #666;
             position: relative;
-            font-size: clamp(0.6rem, 2.5vw, 0.8rem);
-            letter-spacing: 0.5px;
-            min-width: 60px;
+            font-size: 12px;
         }
 
         .step.active {
@@ -187,23 +151,24 @@
             position: absolute;
             right: -5px;
             color: #ff3333;
-            font-size: 0.8rem;
+            font-size: 12px;
         }
 
-        /* 相機啟動按鈕 - 手機版 */
+        /* 相機啟動按鈕 */
         .camera-init {
             text-align: center;
             padding: 40px 20px;
             border: 2px solid #ff3333;
             background: rgba(0, 0, 0, 0.9);
-            margin: 20px 10px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
         }
 
         .camera-init button {
             width: 100%;
-            max-width: 300px;
+            max-width: 280px;
             padding: 18px 20px;
-            font-size: clamp(1.2rem, 5vw, 1.5rem);
+            font-size: 18px;
             border: 3px solid #ff3333;
             background: transparent;
             color: white;
@@ -213,7 +178,8 @@
             text-transform: uppercase;
             transition: all 0.3s ease;
             -webkit-appearance: none;
-            appearance: none;
+            margin: 0 auto;
+            display: block;
         }
 
         .camera-init button:active {
@@ -222,12 +188,19 @@
             transform: scale(0.95);
         }
 
-        /* 遊戲主區域 - 手機版改為垂直排列 */
+        .camera-init p {
+            margin-top: 15px;
+            color: #ff3333;
+            font-size: 12px;
+        }
+
+        /* 遊戲主區域 - 垂直排列不重疊 */
         .game-main {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            padding: 10px;
+            margin-bottom: 15px;
+            flex: 1;
         }
 
         /* 題目區域和相機區域 */
@@ -236,40 +209,22 @@
             border: 2px solid #ff3333;
             padding: 15px;
             position: relative;
-            box-shadow: 0 0 20px rgba(255, 51, 51, 0.2);
-        }
-
-        .question-area::before, .camera-area::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            width: 15px;
-            height: 15px;
-            border-top: 2px solid #ff3333;
-            border-left: 2px solid #ff3333;
-        }
-
-        .question-area::after, .camera-area::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 15px;
-            height: 15px;
-            border-bottom: 2px solid #ff3333;
-            border-right: 2px solid #ff3333;
         }
 
         .section-title {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 15px;
-            font-size: clamp(1rem, 4vw, 1.2rem);
+            margin-bottom: 12px;
+            font-size: 16px;
             color: #ff3333;
             letter-spacing: 2px;
             text-transform: uppercase;
+        }
+
+        .section-title span:last-child {
+            margin-left: auto;
+            font-size: 14px;
         }
 
         /* 圖片容器 - 固定比例 */
@@ -279,7 +234,7 @@
             background: #111;
             border: 1px solid #ff3333;
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             position: relative;
         }
 
@@ -304,14 +259,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #333;
+            color: #666;
             background: #0a0a0a;
-            font-size: clamp(0.8rem, 3vw, 1rem);
-            letter-spacing: 1px;
+            font-size: 14px;
         }
 
         .placeholder i {
-            font-size: 3rem;
+            font-size: 40px;
             margin-bottom: 10px;
             color: #ff3333;
             opacity: 0.5;
@@ -319,7 +273,7 @@
 
         /* 相似度計 */
         .similarity-meter {
-            margin-top: 15px;
+            margin-top: 10px;
             padding: 12px;
             background: rgba(255, 51, 51, 0.1);
             border: 1px solid #ff3333;
@@ -327,14 +281,13 @@
 
         .meter-label {
             color: #ff3333;
-            letter-spacing: 1px;
             margin-bottom: 8px;
-            font-size: clamp(0.8rem, 3vw, 0.9rem);
+            font-size: 14px;
         }
 
         .meter-bar {
             width: 100%;
-            height: 15px;
+            height: 12px;
             background: #111;
             border: 1px solid #ff3333;
             overflow: hidden;
@@ -349,18 +302,26 @@
         .meter-fill.good { background: #ff9900; }
         .meter-fill.poor { background: #ff3333; }
 
-        /* 控制按鈕 - 手機版垂直排列 */
+        #similarityText {
+            text-align: center;
+            margin-top: 8px;
+            color: #ff3333;
+            font-size: 14px;
+        }
+
+        /* 控制按鈕 - 垂直排列 */
         .game-controls {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            padding: 10px;
+            margin-top: 10px;
+            flex-shrink: 0;
         }
 
         .btn {
             width: 100%;
             padding: 15px 20px;
-            font-size: clamp(1rem, 4vw, 1.2rem);
+            font-size: 16px;
             border: 2px solid #ff3333;
             background: transparent;
             color: white;
@@ -370,8 +331,6 @@
             text-transform: uppercase;
             transition: all 0.3s ease;
             -webkit-appearance: none;
-            appearance: none;
-            border-radius: 0;
         }
 
         .btn:active {
@@ -383,26 +342,46 @@
         .btn:disabled {
             opacity: 0.3;
             cursor: not-allowed;
+            pointer-events: none;
         }
 
-        /* 玩家列表 - 手機版 */
+        .btn:disabled:active {
+            background: transparent;
+            color: white;
+            transform: none;
+        }
+
+        /* 拍照按鈕區域 */
+        .photo-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .photo-actions .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 15px;
+        }
+
+        /* 玩家列表 */
         .players-section {
-            margin: 15px 10px;
+            margin-top: 15px;
             padding: 15px;
             border: 1px solid #ff3333;
             background: rgba(0, 0, 0, 0.9);
+            flex-shrink: 0;
         }
 
         .players-section h3 {
             color: #ff3333;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            font-size: clamp(1rem, 4vw, 1.2rem);
+            margin-bottom: 12px;
+            font-size: 16px;
         }
 
         .players-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
         }
 
@@ -414,60 +393,56 @@
         }
 
         .player-avatar {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             background: #ff3333;
             border-radius: 50%;
-            margin: 0 auto 8px;
+            margin: 0 auto 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 18px;
             color: black;
         }
 
         .player-name {
             font-weight: 700;
-            margin-bottom: 5px;
-            font-size: clamp(0.8rem, 3vw, 0.9rem);
+            margin-bottom: 3px;
+            font-size: 12px;
         }
 
         .player-score {
             color: #ff3333;
             font-weight: 700;
-            font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+            font-size: 11px;
         }
 
-        /* 成績榜 - 手機版改為底部 */
+        /* 成績榜 - 隱藏，改為固定在底部 */
         .leaderboard {
             position: fixed;
-            bottom: 0;
+            bottom: -100%;
             left: 0;
             right: 0;
             background: rgba(0, 0, 0, 0.95);
             border-top: 2px solid #ff3333;
-            padding: 10px;
+            padding: 15px;
             z-index: 100;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
+            transition: bottom 0.3s ease;
         }
 
         .leaderboard.show {
-            transform: translateY(0);
+            bottom: 0;
         }
 
         .leaderboard h3 {
             color: #ff3333;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            font-size: clamp(0.9rem, 4vw, 1rem);
+            margin-bottom: 10px;
         }
 
         .leaderboard-item {
             display: flex;
             justify-content: space-between;
             padding: 5px 0;
-            font-size: clamp(0.8rem, 3vw, 0.9rem);
             border-bottom: 1px solid rgba(255, 51, 51, 0.2);
         }
 
@@ -476,22 +451,20 @@
             text-align: center;
             padding: 15px;
             border: 2px solid #ff3333;
-            margin-top: 15px;
+            margin-top: 10px;
             background: rgba(0, 0, 0, 0.9);
         }
 
         .result-message {
             color: #ff3333;
-            font-size: clamp(1.2rem, 5vw, 1.5rem);
-            letter-spacing: 2px;
+            font-size: 18px;
         }
 
         .score {
-            font-size: clamp(2.5rem, 10vw, 3rem);
+            font-size: 36px;
             color: #ff3333;
             margin: 10px 0;
             font-weight: 900;
-            text-shadow: 0 0 20px rgba(255, 51, 51, 0.8);
         }
 
         /* 提示訊息 */
@@ -504,25 +477,24 @@
             border: 2px solid #ff3333;
             color: white;
             padding: 15px 25px;
-            font-size: clamp(1rem, 4vw, 1.2rem);
-            letter-spacing: 2px;
+            font-size: 16px;
             z-index: 1000;
             display: none;
             text-align: center;
             width: 80%;
-            max-width: 300px;
+            max-width: 280px;
         }
 
         .toast.show {
             display: block;
-            animation: glitchIn 0.3s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         /* 返回按鈕 */
         .back-button {
             position: fixed;
-            top: 10px;
-            left: 10px;
+            top: 15px;
+            left: 15px;
             z-index: 100;
         }
 
@@ -530,28 +502,14 @@
             color: #ff3333;
             text-decoration: none;
             border: 1px solid #ff3333;
-            padding: 8px 15px;
-            font-size: clamp(0.8rem, 3vw, 0.9rem);
-            letter-spacing: 1px;
-            display: inline-block;
+            padding: 8px 12px;
+            font-size: 12px;
             background: rgba(0, 0, 0, 0.8);
-        }
-
-        /* 拍照按鈕區域 */
-        .photo-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .photo-actions .btn {
-            flex: 1;
-            padding: 12px;
-            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            display: inline-block;
         }
 
         /* 動畫 */
-        @keyframes glitchIn {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translate(-50%, -50%) scale(0.5);
@@ -572,46 +530,27 @@
             75% { transform: translateX(5px); }
         }
 
-        /* 橫屏模式優化 */
-        @media (orientation: landscape) and (max-height: 600px) {
-            .game-main {
-                flex-direction: row;
-            }
-            
-            .game-controls {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            
-            .btn {
-                width: auto;
-                flex: 1;
-            }
-            
-            .leaderboard {
-                bottom: auto;
-                top: 50%;
-                right: 0;
-                left: auto;
-                transform: translateY(-50%);
-                border-top: none;
-                border-left: 2px solid #ff3333;
-                width: 200px;
-            }
+        /* 相機狀態顏色 */
+        #cameraStatus.online {
+            color: #00ff00;
         }
 
-        /* 安全區域適配 */
+        #cameraStatus.offline {
+            color: #ff3333;
+        }
+
+        /* 安全區域 */
         @supports (padding: max(0px)) {
             .game-container {
-                padding-left: max(10px, env(safe-area-inset-left));
-                padding-right: max(10px, env(safe-area-inset-right));
-                padding-top: max(10px, env(safe-area-inset-top));
-                padding-bottom: max(10px, env(safe-area-inset-bottom));
+                padding-left: max(15px, env(safe-area-inset-left));
+                padding-right: max(15px, env(safe-area-inset-right));
+                padding-top: max(15px, env(safe-area-inset-top));
+                padding-bottom: max(15px, env(safe-area-inset-bottom));
             }
             
             .back-button {
-                top: max(10px, env(safe-area-inset-top));
-                left: max(10px, env(safe-area-inset-left));
+                top: max(15px, env(safe-area-inset-top));
+                left: max(15px, env(safe-area-inset-left));
             }
         }
     </style>
@@ -619,14 +558,13 @@
 <body>
     <div class="cyber-bg"></div>
     <div class="scan-line"></div>
-    <div class="noise"></div>
 
     <!-- 返回按鈕 -->
     <div class="back-button">
-        <a href="index.html">← TERMINUS</a>
+        <a href="index.html">← 返回</a>
     </div>
 
-    <!-- 成績榜（可滑出） -->
+    <!-- 成績榜（隱藏，可通過點擊顯示） -->
     <div class="leaderboard" id="leaderboard">
         <h3>▶ RANKING</h3>
         <div id="leaderboardList"></div>
@@ -644,93 +582,97 @@
 
         <!-- 相機啟動按鈕 -->
         <div class="camera-init" id="cameraInit">
-            <button onclick="startCamera()">
-                ▶ INIT CAMERA
+            <button onclick="startCamera()" id="cameraInitBtn">
+                ▶ 啟動相機
             </button>
-            <p style="margin-top: 15px; color: #ff3333; font-size: 0.8rem;">// ACCESS REQUIRED //</p>
+            <p>// 需要相機權限 //</p>
         </div>
 
         <!-- 步驟指示器 -->
         <div class="step-indicator" id="stepIndicator" style="display: none;">
-            <div class="step" id="step1">CAPTURE</div>
-            <div class="step" id="step2">CONFIRM</div>
-            <div class="step" id="step3">WAIT</div>
-            <div class="step" id="step4">MATCH</div>
-            <div class="step" id="step5">SCORE</div>
+            <div class="step" id="step1">拍照</div>
+            <div class="step" id="step2">確認</div>
+            <div class="step" id="step3">等待</div>
+            <div class="step" id="step4">配對</div>
+            <div class="step" id="step5">得分</div>
         </div>
 
         <!-- 遊戲主區域 -->
         <div class="game-main" id="gameMain" style="display: none;">
-            <!-- 左側：題目區域 -->
+            <!-- 題目區域 -->
             <div class="question-area">
                 <div class="section-title">
-                    <span>> TARGET</span>
+                    <span>> 目標</span>
                     <span id="questionOwner"></span>
                 </div>
                 <div class="image-container" id="targetImage">
-                    <img id="targetImg" src="" alt="TARGET" style="display: none;">
+                    <img id="targetImg" src="" alt="目標" style="display: none;">
                     <div class="placeholder" id="targetPlaceholder">
                         <i>⌛</i>
-                        <p>AWAITING</p>
+                        <p>等待目標</p>
                     </div>
                 </div>
                 
                 <div class="image-container" id="questionPreviewContainer" style="display: none;">
-                    <div class="section-title">> YOUR SHOT</div>
-                    <img id="questionPreview" src="" alt="YOUR SHOT" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="section-title">> 你的照片</div>
+                    <img id="questionPreview" src="" alt="預覽" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
 
+                <!-- 相似度顯示 -->
                 <div class="similarity-meter" id="similarityMeter" style="display: none;">
-                    <div class="meter-label">MATCH RATE</div>
+                    <div class="meter-label">配對率</div>
                     <div class="meter-bar">
                         <div class="meter-fill" id="similarityFill" style="width: 0%"></div>
                     </div>
-                    <div style="text-align: center; margin-top: 8px; color: #ff3333;" id="similarityText">0%</div>
+                    <div id="similarityText">0%</div>
                 </div>
 
+                <!-- 得分結果 -->
                 <div class="result-box" id="resultBox" style="display: none;">
                     <div class="result-message" id="resultMessage"></div>
                     <div class="score" id="scoreDisplay">0</div>
                 </div>
             </div>
 
-            <!-- 右側：相機區域 -->
+            <!-- 相機區域 -->
             <div class="camera-area">
                 <div class="section-title">
-                    <span>> CAMERA</span>
-                    <span id="cameraStatus">OFF</span>
+                    <span>> 相機</span>
+                    <span id="cameraStatus" class="offline">離線</span>
                 </div>
                 <div class="image-container">
                     <video id="video" autoplay playsinline></video>
                     <canvas id="canvas" style="display: none;"></canvas>
                     <div class="placeholder" id="cameraPlaceholder">
                         <i>📷</i>
-                        <p>OFFLINE</p>
+                        <p>相機離線</p>
                     </div>
                 </div>
 
+                <!-- 拍照預覽 -->
                 <div class="image-container" id="photoPreviewContainer" style="display: none;">
-                    <div class="section-title">> PREVIEW</div>
-                    <img id="photoPreview" src="" alt="PREVIEW" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="section-title">> 預覽</div>
+                    <img id="photoPreview" src="" alt="預覽" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
 
+                <!-- 拍照按鈕 -->
                 <div class="photo-actions">
-                    <button class="btn" id="takePhotoBtn" onclick="takePhoto()" disabled>📸 CAPTURE</button>
+                    <button class="btn" id="takePhotoBtn" onclick="takePhoto()" disabled>📸 拍照</button>
                 </div>
             </div>
         </div>
 
         <!-- 遊戲控制按鈕 -->
         <div class="game-controls" id="gameControls" style="display: none;">
-            <button class="btn" id="startGameBtn" onclick="startGame()">▶ START</button>
-            <button class="btn" id="confirmQuestionBtn" onclick="confirmQuestion()" style="display: none;">✓ CONFIRM</button>
-            <button class="btn" id="submitAnswerBtn" onclick="submitAnswer()" style="display: none;">⬆ SUBMIT</button>
-            <button class="btn" id="nextRoundBtn" onclick="nextRound()" style="display: none;">⏭ NEXT</button>
+            <button class="btn" id="startGameBtn" onclick="startGame()">▶ 開始遊戲</button>
+            <button class="btn" id="confirmQuestionBtn" onclick="confirmQuestion()" style="display: none;">✓ 確認出題</button>
+            <button class="btn" id="submitAnswerBtn" onclick="submitAnswer()" style="display: none;">⬆ 提交答案</button>
+            <button class="btn" id="nextRoundBtn" onclick="nextRound()" style="display: none;">⏭ 下一關</button>
         </div>
 
         <!-- 玩家列表 -->
         <div class="players-section" id="playersSection" style="display: none;">
-            <h3>> OPERATORS</h3>
+            <h3>> 玩家</h3>
             <div class="players-grid" id="playersList"></div>
         </div>
     </div>
@@ -739,12 +681,601 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // 這裡放入之前完整的 JavaScript 程式碼
-        // 為了節省空間，請複製之前完整版的 JavaScript 部分
-        // 注意：需要把之前的所有 JavaScript 函數都複製到這裡
-        
-        // 為了節省回覆長度，JavaScript 部分保持不變
-        // 請從之前的完整版本複製所有 JavaScript 函數到這裡
+        // ==================== 遊戲設定 ====================
+        const GAME_CONFIG = {
+            baseQuestionTime: 30,
+            baseAnswerTime: 60,
+            timeReducePerLevel: 5,
+            minTime: 10,
+            similarityThreshold: 70,
+            goodThreshold: 85,
+            perfectThreshold: 95
+        };
+
+        // ==================== 遊戲狀態 ====================
+        let gameState = {
+            level: 1,
+            phase: 'idle',
+            timer: 0,
+            timerInterval: null,
+            questionPhoto: null,
+            currentPhoto: null,
+            players: [],
+            currentPlayerId: 'player1',
+            score: 0,
+            camera: null,
+            cameraActive: false,
+            lastResult: null
+        };
+
+        // 模擬玩家資料
+        const mockPlayers = [
+            { id: 'player1', name: '你', avatar: '👤', score: 0, isCurrent: true },
+            { id: 'player2', name: '獵人A', avatar: '⚡', score: 0 },
+            { id: 'player3', name: '獵人B', avatar: '🔥', score: 0 }
+        ];
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initGame();
+        });
+
+        function initGame() {
+            gameState.players = [...mockPlayers];
+            updateLeaderboard();
+            updatePlayersList();
+        }
+
+        // ==================== 相機功能 ====================
+        async function startCamera() {
+            const cameraBtn = document.getElementById('cameraInitBtn');
+            cameraBtn.disabled = true;
+            cameraBtn.textContent = '請求中...';
+            
+            try {
+                showToast('請求相機權限...');
+                
+                const constraints = {
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'environment'
+                    }
+                };
+
+                gameState.camera = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                const video = document.getElementById('video');
+                video.srcObject = gameState.camera;
+                
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        video.play();
+                        resolve();
+                    };
+                });
+                
+                video.classList.add('visible');
+                document.getElementById('cameraPlaceholder').style.display = 'none';
+                
+                document.getElementById('canvas').width = video.videoWidth;
+                document.getElementById('canvas').height = video.videoHeight;
+                
+                gameState.cameraActive = true;
+                const cameraStatus = document.getElementById('cameraStatus');
+                cameraStatus.textContent = '在線';
+                cameraStatus.className = 'online';
+                document.getElementById('takePhotoBtn').disabled = false;
+                
+                // 顯示遊戲介面
+                document.getElementById('cameraInit').style.display = 'none';
+                document.getElementById('stepIndicator').style.display = 'flex';
+                document.getElementById('gameMain').style.display = 'flex';
+                document.getElementById('gameControls').style.display = 'flex';
+                document.getElementById('playersSection').style.display = 'block';
+                
+                showToast('✅ 相機已啟動');
+                
+            } catch (error) {
+                console.error('相機啟動失敗:', error);
+                let errorMessage = '相機錯誤';
+                if (error.name === 'NotAllowedError') {
+                    errorMessage = '請允許相機權限';
+                } else if (error.name === 'NotFoundError') {
+                    errorMessage = '找不到相機';
+                } else if (error.name === 'NotReadableError') {
+                    errorMessage = '相機被占用';
+                }
+                showToast('❌ ' + errorMessage, 'error');
+                
+                const cameraStatus = document.getElementById('cameraStatus');
+                cameraStatus.textContent = '錯誤';
+                cameraStatus.className = 'offline';
+            } finally {
+                cameraBtn.disabled = false;
+                cameraBtn.textContent = '▶ 啟動相機';
+            }
+        }
+
+        // ==================== 圖片比對功能 ====================
+        async function calculateImageSimilarity(img1Data, img2Data) {
+            return new Promise((resolve) => {
+                const img1 = new Image();
+                const img2 = new Image();
+                let loadedCount = 0;
+                
+                img1.onload = () => {
+                    loadedCount++;
+                    if (loadedCount === 2) {
+                        const similarity = compareImagesFriendly(img1, img2);
+                        resolve(similarity);
+                    }
+                };
+                
+                img2.onload = () => {
+                    loadedCount++;
+                    if (loadedCount === 2) {
+                        const similarity = compareImagesFriendly(img1, img2);
+                        resolve(similarity);
+                    }
+                };
+                
+                img1.src = img1Data;
+                img2.src = img2Data;
+            });
+        }
+
+        function compareImagesFriendly(img1, img2) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const size = 64;
+            canvas.width = size;
+            canvas.height = size;
+            
+            ctx.drawImage(img1, 0, 0, size, size);
+            const features1 = extractFriendlyFeatures(ctx, size);
+            
+            ctx.clearRect(0, 0, size, size);
+            ctx.drawImage(img2, 0, 0, size, size);
+            const features2 = extractFriendlyFeatures(ctx, size);
+            
+            let totalDifference = 0;
+            let maxDifference = 0;
+            
+            for (let i = 0; i < features1.length; i++) {
+                const diff = Math.abs(features1[i] - features2[i]);
+                totalDifference += diff;
+                maxDifference = Math.max(maxDifference, diff);
+            }
+            
+            const avgDifference = totalDifference / features1.length;
+            let similarity = 100 - (avgDifference * 100 / 255);
+            const maxDiffPenalty = Math.min(maxDifference / 255 * 30, 30);
+            similarity = similarity - maxDiffPenalty;
+            
+            similarity = Math.max(0, Math.min(100, similarity));
+            
+            return Math.round(similarity);
+        }
+
+        function extractFriendlyFeatures(ctx, size) {
+            const imageData = ctx.getImageData(0, 0, size, size);
+            const data = imageData.data;
+            
+            const features = [];
+            
+            for (let i = 0; i < data.length; i += 16) {
+                const gray = Math.round(
+                    data[i] * 0.299 + 
+                    data[i + 1] * 0.587 + 
+                    data[i + 2] * 0.114
+                );
+                features.push(gray);
+            }
+            
+            for (let y = 0; y < size; y += 8) {
+                for (let x = 0; x < size; x += 8) {
+                    let sum = 0;
+                    let count = 0;
+                    
+                    for (let dy = 0; dy < 8 && y + dy < size; dy++) {
+                        for (let dx = 0; dx < 8 && x + dx < size; dx++) {
+                            const idx = ((y + dy) * size + (x + dx)) * 4;
+                            sum += data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
+                            count++;
+                        }
+                    }
+                    
+                    features.push(Math.round(sum / count));
+                }
+            }
+            
+            return features;
+        }
+
+        // ==================== 拍照功能 ====================
+        function takePhoto() {
+            if (!gameState.cameraActive) {
+                showToast('相機未啟動', 'error');
+                return;
+            }
+
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const photoData = canvas.toDataURL('image/jpeg', 0.95);
+            gameState.currentPhoto = photoData;
+            
+            document.getElementById('photoPreview').src = photoData;
+            document.getElementById('photoPreviewContainer').style.display = 'block';
+            
+            if (gameState.phase === 'idle' || gameState.phase === 'takingQuestion') {
+                gameState.phase = 'takingQuestion';
+                document.getElementById('confirmQuestionBtn').style.display = 'inline-block';
+                document.getElementById('submitAnswerBtn').style.display = 'none';
+                showToast('📸 拍照完成');
+            } else if (gameState.phase === 'answering') {
+                calculateAndShowSimilarity();
+            }
+            
+            document.querySelector('.camera-area').classList.add('shake');
+            setTimeout(() => {
+                document.querySelector('.camera-area').classList.remove('shake');
+            }, 300);
+        }
+
+        // ==================== 出題流程 ====================
+        function startGame() {
+            gameState.phase = 'takingQuestion';
+            gameState.level = 1;
+            gameState.questionPhoto = null;
+            gameState.currentPhoto = null;
+            gameState.score = 0;
+            
+            gameState.players = gameState.players.map(p => {
+                if (p.isCurrent) {
+                    return { ...p, score: 0 };
+                }
+                return p;
+            });
+            
+            updateSteps(1);
+            updatePhase('拍照出題');
+            startTimer(GAME_CONFIG.baseQuestionTime);
+            
+            document.getElementById('startGameBtn').style.display = 'none';
+            document.getElementById('confirmQuestionBtn').style.display = 'none';
+            document.getElementById('submitAnswerBtn').style.display = 'none';
+            document.getElementById('nextRoundBtn').style.display = 'none';
+            document.getElementById('takePhotoBtn').disabled = false;
+            
+            document.getElementById('targetImg').style.display = 'none';
+            document.getElementById('targetPlaceholder').style.display = 'flex';
+            document.getElementById('questionPreviewContainer').style.display = 'none';
+            document.getElementById('photoPreviewContainer').style.display = 'none';
+            document.getElementById('similarityMeter').style.display = 'none';
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('questionOwner').textContent = '';
+            
+            updateLeaderboard();
+            updatePlayersList();
+            
+            showToast('🎮 遊戲開始');
+        }
+
+        function confirmQuestion() {
+            if (!gameState.currentPhoto) {
+                showToast('請先拍照', 'error');
+                return;
+            }
+
+            gameState.questionPhoto = gameState.currentPhoto;
+            
+            document.getElementById('targetImg').src = gameState.questionPhoto;
+            document.getElementById('targetImg').style.display = 'block';
+            document.getElementById('targetPlaceholder').style.display = 'none';
+            
+            document.getElementById('questionPreview').src = gameState.questionPhoto;
+            document.getElementById('questionPreviewContainer').style.display = 'block';
+            
+            gameState.phase = 'waiting';
+            updateSteps(3);
+            updatePhase('等待對手');
+            
+            stopTimer();
+            
+            document.getElementById('confirmQuestionBtn').style.display = 'none';
+            document.getElementById('takePhotoBtn').disabled = true;
+            
+            showToast('✅ 出題完成');
+            
+            setTimeout(() => {
+                startAnsweringPhase();
+            }, 2000);
+        }
+
+        function startAnsweringPhase() {
+            gameState.phase = 'answering';
+            updateSteps(4);
+            updatePhase('對手答題');
+            
+            const otherPlayers = gameState.players.filter(p => !p.isCurrent);
+            if (otherPlayers.length > 0) {
+                const randomPlayer = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+                document.getElementById('questionOwner').textContent = `👤 ${randomPlayer.name}`;
+            }
+            
+            const answerTime = Math.max(
+                GAME_CONFIG.baseAnswerTime - (gameState.level - 1) * GAME_CONFIG.timeReducePerLevel,
+                GAME_CONFIG.minTime
+            );
+            startTimer(answerTime);
+            
+            document.getElementById('takePhotoBtn').disabled = false;
+            document.getElementById('submitAnswerBtn').style.display = 'inline-block';
+            
+            showToast('🎯 請拍攝相同角度');
+        }
+
+        // ==================== 答題功能 ====================
+        async function calculateAndShowSimilarity() {
+            if (!gameState.questionPhoto || !gameState.currentPhoto) return;
+            
+            const similarity = await calculateImageSimilarity(gameState.questionPhoto, gameState.currentPhoto);
+            
+            document.getElementById('similarityMeter').style.display = 'block';
+            const fill = document.getElementById('similarityFill');
+            const text = document.getElementById('similarityText');
+            
+            fill.style.width = similarity + '%';
+            text.textContent = similarity + '%';
+            
+            if (similarity >= GAME_CONFIG.perfectThreshold) {
+                fill.className = 'meter-fill perfect';
+            } else if (similarity >= GAME_CONFIG.goodThreshold) {
+                fill.className = 'meter-fill good';
+            } else if (similarity >= GAME_CONFIG.similarityThreshold) {
+                fill.className = 'meter-fill good';
+                fill.style.background = '#ff9900';
+            } else {
+                fill.className = 'meter-fill poor';
+            }
+            
+            gameState.lastResult = {
+                similarity: similarity,
+                isPass: similarity >= GAME_CONFIG.similarityThreshold
+            };
+            
+            if (similarity >= GAME_CONFIG.similarityThreshold) {
+                showToast(`✅ 相似度 ${similarity}%`, 'success');
+            } else {
+                showToast(`📸 需要 ${GAME_CONFIG.similarityThreshold}%`, 'warning');
+            }
+        }
+
+        async function submitAnswer() {
+            if (!gameState.currentPhoto) {
+                showToast('請先拍照', 'error');
+                return;
+            }
+
+            if (!gameState.lastResult) {
+                await calculateAndShowSimilarity();
+            }
+
+            if (!gameState.lastResult || !gameState.lastResult.isPass) {
+                showToast(`❌ 相似度不足`, 'error');
+                return;
+            }
+
+            const similarity = gameState.lastResult.similarity;
+            const timeBonus = Math.floor(gameState.timer * 5);
+            let similarityBonus = similarity >= GAME_CONFIG.perfectThreshold ? 300 :
+                                similarity >= GAME_CONFIG.goodThreshold ? 200 : 100;
+            
+            const roundScore = 100 + timeBonus + similarityBonus;
+            gameState.score += roundScore;
+            
+            const currentPlayer = gameState.players.find(p => p.isCurrent);
+            if (currentPlayer) {
+                currentPlayer.score = gameState.score;
+            }
+            
+            gameState.phase = 'scoring';
+            updateSteps(5);
+            updatePhase('得分');
+            
+            let resultMessage = similarity >= GAME_CONFIG.perfectThreshold ? '✨ 完美 ✨' :
+                               similarity >= GAME_CONFIG.goodThreshold ? '🌟 良好' : '✓ 成功';
+            
+            document.getElementById('resultBox').style.display = 'block';
+            document.getElementById('resultMessage').innerHTML = resultMessage;
+            document.getElementById('scoreDisplay').textContent = `+${roundScore}`;
+            
+            document.getElementById('submitAnswerBtn').style.display = 'none';
+            document.getElementById('takePhotoBtn').disabled = true;
+            document.getElementById('nextRoundBtn').style.display = 'inline-block';
+            
+            stopTimer();
+            updateLeaderboard();
+            updatePlayersList();
+            
+            showToast(`🎉 得分 +${roundScore}`);
+        }
+
+        // ==================== 下一關 ====================
+        function nextRound() {
+            gameState.level++;
+            gameState.phase = 'takingQuestion';
+            gameState.currentPhoto = null;
+            gameState.lastResult = null;
+            
+            updateSteps(1);
+            updatePhase('拍照出題');
+            
+            const questionTime = Math.min(
+                GAME_CONFIG.baseQuestionTime + (gameState.level - 1) * 10,
+                60
+            );
+            startTimer(questionTime);
+            
+            document.getElementById('targetImg').style.display = 'none';
+            document.getElementById('targetPlaceholder').style.display = 'flex';
+            document.getElementById('questionPreviewContainer').style.display = 'none';
+            document.getElementById('photoPreviewContainer').style.display = 'none';
+            document.getElementById('similarityMeter').style.display = 'none';
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('questionOwner').textContent = '';
+            
+            document.getElementById('confirmQuestionBtn').style.display = 'none';
+            document.getElementById('submitAnswerBtn').style.display = 'none';
+            document.getElementById('nextRoundBtn').style.display = 'none';
+            document.getElementById('takePhotoBtn').disabled = false;
+            
+            showToast(`🌟 第 ${gameState.level} 關`);
+        }
+
+        // ==================== 計時器 ====================
+        function startTimer(seconds) {
+            gameState.timer = seconds;
+            updateTimerDisplay();
+            
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            
+            gameState.timerInterval = setInterval(() => {
+                gameState.timer--;
+                updateTimerDisplay();
+                
+                if (gameState.timer <= 0) {
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = gameState.timer + 's';
+            
+            if (gameState.timer <= 10) {
+                timerElement.classList.add('warning');
+            } else {
+                timerElement.classList.remove('warning');
+            }
+        }
+
+        function handleTimeout() {
+            stopTimer();
+            
+            if (gameState.phase === 'takingQuestion') {
+                showToast('⏰ 時間到', 'warning');
+                if (gameState.currentPhoto) {
+                    confirmQuestion();
+                } else {
+                    nextRound();
+                }
+            } else if (gameState.phase === 'answering') {
+                showToast('⏰ 時間到', 'warning');
+                nextRound();
+            }
+        }
+
+        // ==================== UI 更新 ====================
+        function updateSteps(activeStep) {
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (step) {
+                    step.classList.remove('active', 'completed');
+                    if (i < activeStep) {
+                        step.classList.add('completed');
+                    } else if (i === activeStep) {
+                        step.classList.add('active');
+                    }
+                }
+            }
+        }
+
+        function updatePhase(text) {
+            document.getElementById('phaseIndicator').textContent = text;
+            document.getElementById('currentLevel').textContent = `LV ${gameState.level.toString().padStart(2, '0')}`;
+        }
+
+        function updatePlayersList() {
+            const playersList = document.getElementById('playersList');
+            if (playersList) {
+                playersList.innerHTML = gameState.players.map(player => `
+                    <div class="player-card">
+                        <div class="player-avatar">${player.avatar}</div>
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-score">${player.score}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            if (leaderboardList) {
+                const sortedPlayers = [...gameState.players].sort((a, b) => b.score - a.score);
+                leaderboardList.innerHTML = sortedPlayers.map((player, index) => `
+                    <div class="leaderboard-item">
+                        <span>${index + 1}. ${player.avatar} ${player.name}</span>
+                        <span>${player.score}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.className = 'toast show';
+            
+            if (type === 'error') {
+                toast.style.background = 'rgba(255, 51, 51, 0.9)';
+            } else if (type === 'warning') {
+                toast.style.background = 'rgba(255, 153, 0, 0.9)';
+            } else {
+                toast.style.background = 'rgba(0, 255, 0, 0.9)';
+            }
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 1500);
+        }
+
+        // 清理資源
+        window.addEventListener('beforeunload', function() {
+            if (gameState.camera) {
+                gameState.camera.getTracks().forEach(track => track.stop());
+            }
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+        });
+
+        // 點擊顯示排名
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.leaderboard')) return;
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.classList.toggle('show');
+            setTimeout(() => {
+                leaderboard.classList.remove('show');
+            }, 3000);
+        });
     </script>
 </body>
 </html>
