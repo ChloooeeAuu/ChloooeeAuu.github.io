@@ -24,7 +24,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 背景效果 */
         .cyber-bg {
             position: fixed;
             top: 0;
@@ -58,14 +57,13 @@
             z-index: 10;
         }
 
-        /* 可滾動容器 - 增加底部空間 */
         .game-container {
             width: 100vw;
             height: 100vh;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 15px;
-            padding-bottom: 50px;
+            padding-bottom: 60px;
             position: relative;
             z-index: 1;
             display: flex;
@@ -73,7 +71,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* 狀態欄 */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -96,7 +93,6 @@
             font-size: 10px;
         }
 
-        /* 負能量條 */
         .energy-container {
             margin-bottom: 15px;
             flex-shrink: 0;
@@ -122,7 +118,6 @@
             transition: width 0.3s ease;
         }
 
-        /* 場地標題 */
         .location-header {
             text-align: center;
             padding: 15px;
@@ -142,20 +137,16 @@
             margin-top: 5px;
         }
 
-        /* 計時器 */
-        .timer-box {
-            text-align: center;
-            margin-bottom: 15px;
-            flex-shrink: 0;
-        }
         .timer {
             font-size: 48px;
             font-weight: 900;
             color: #ff3333;
             text-shadow: 0 0 15px rgba(255,51,51,0.8);
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
 
-        /* 區域共用樣式 */
         .area-card {
             background: rgba(0,0,0,0.9);
             border: 2px solid #ff3333;
@@ -194,7 +185,6 @@
         }
         .placeholder i { font-size: 40px; color: #ff3333; opacity: 0.5; }
 
-        /* 相似度計 */
         .similarity-meter {
             margin-top: 10px;
             padding: 10px;
@@ -213,11 +203,10 @@
             height: 100%;
             transition: width 0.3s ease;
         }
-        .meter-fill.perfect { background: #00ff00; }
-        .meter-fill.good { background: #ff9900; }
-        .meter-fill.poor { background: #ff3333; }
+        .meter-fill.high { background: #00ff00; }
+        .meter-fill.medium { background: #ff9900; }
+        .meter-fill.low { background: #ff3333; }
 
-        /* 按鈕 - 加大間距 */
         .btn {
             width: 100%;
             padding: 15px;
@@ -234,7 +223,7 @@
             -webkit-appearance: none;
         }
         .btn:active { background: #ff3333; color: black; transform: scale(0.98); }
-        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #video {
             width: 100%;
@@ -269,7 +258,6 @@
             background: rgba(0,0,0,0.8);
         }
 
-        /* 底部按鈕容器 - 增加底部空間 */
         .bottom-buttons {
             margin-top: 10px;
             margin-bottom: 30px;
@@ -317,7 +305,6 @@
     <div class="back-button"><a href="index.html">← EXIT</a></div>
 
     <div class="game-container">
-        <!-- 狀態欄 -->
         <div class="status-bar">
             <div class="level-info">
                 <span id="currentLocation">GATE</span>
@@ -325,19 +312,16 @@
             <div class="timer" id="timer">--</div>
         </div>
 
-        <!-- 負能量條 -->
         <div class="energy-container">
             <div class="energy-label"><span>⚡ NEGATIVE ENERGY</span><span id="energyPercent">100%</span></div>
             <div class="energy-bar-bg"><div class="energy-fill" id="energyFill" style="width: 100%"></div></div>
         </div>
 
-        <!-- 場地/關卡資訊 -->
         <div class="location-header" id="locationHeader" style="display: none;">
             <div class="location-name">🏛️ GATE AREA</div>
             <div class="level-badge" id="levelInfo">LEVEL 1/5 | TIME: 5:00</div>
         </div>
 
-        <!-- 挑戰圖片區域 -->
         <div class="area-card" id="challengeArea" style="display: none;">
             <div class="section-title">🎯 TARGET PHOTO</div>
             <div class="image-container" id="targetContainer">
@@ -346,14 +330,12 @@
             </div>
         </div>
 
-        <!-- 相似度顯示 -->
         <div class="similarity-meter" id="similarityMeter" style="display:none">
             <div class="meter-label">MATCH RATE</div>
             <div class="meter-bar"><div class="meter-fill" id="similarityFill" style="width:0%"></div></div>
             <div id="similarityText" style="text-align:center; margin-top:5px; color:#ff3333">0%</div>
         </div>
 
-        <!-- 相機區域 -->
         <div class="area-card" id="cameraArea" style="display: none;">
             <div class="section-title">📷 YOUR CAMERA</div>
             <div class="image-container">
@@ -368,12 +350,10 @@
             <div id="cameraStatus" style="text-align:center; margin-top:10px; font-size:12px">OFFLINE</div>
         </div>
 
-        <!-- 底部按鈕容器 -->
         <div class="bottom-buttons">
             <button class="btn" id="nextLevelBtn" onclick="nextLevel()" style="display:none">⏭ NEXT LEVEL</button>
         </div>
         
-        <!-- 大門介紹區域和開始按鈕 -->
         <div class="area-card" id="gateIntroCard">
             <div class="section-title">📍 GATE AREA</div>
             <div class="image-container">
@@ -397,22 +377,20 @@
         
         const LEVEL_TIMES = [300, 240, 180, 120, 60];
         
-        // 相似度評分標準 - 嚴格模式
-        // 只有達到指定相似度才能提交
-        const SIMILARITY_THRESHOLD = 85;  // 需要85%以上相似度才能提交
-        
-        // 每關最多扣除20%負能量
+        // 每關最多扣除4%負能量
         const MAX_REDUCTION_PER_LEVEL = 4;
         
-        // 相似度對應的扣除百分比
+        // 根據相似度計算扣除百分比 (最高4%)
         function getReductionBySimilarity(similarity) {
-            if (similarity >= 95) return 4;      // 完美匹配 - 20%
-            if (similarity >= 90) return 3.5;      // 極佳 - 18%
-            if (similarity >= 85) return 3;      // 優秀 - 15%
-            if (similarity >= 80) return 2.5;      // 良好 - 12%
-            if (similarity >= 70) return 2;       // 一般 - 8%
-            if (similarity >= 60) return 1;       // 及格 - 5%
-            return 0;                              // 不合格，不扣除
+            if (similarity >= 95) return 4.0;      // 完美匹配 - 4%
+            if (similarity >= 90) return 3.5;      // 極佳 - 3.5%
+            if (similarity >= 85) return 3.0;      // 優秀 - 3%
+            if (similarity >= 80) return 2.5;      // 良好 - 2.5%
+            if (similarity >= 75) return 2.0;      // 不錯 - 2%
+            if (similarity >= 70) return 1.5;      // 一般 - 1.5%
+            if (similarity >= 65) return 1.0;      // 及格 - 1%
+            if (similarity >= 60) return 0.5;      // 勉強 - 0.5%
+            return 0;                               // 0% 不扣除
         }
         
         // 遊戲狀態
@@ -557,40 +535,43 @@
             takePhotoBtn.textContent = "📸 RETRY";
             showToast("📸 PHOTO TAKEN! CALCULATING SIMILARITY...");
             
-            calculateSimilarityWithTarget();
+            calculateSimilarity();
         }
         
-        // 嚴格的相似度計算 - 只有真正匹配才能獲得高分
-        function calculateSimilarityWithTarget() {
-            // 真實的圖片比對模擬
-            // 為了讓遊戲有挑戰性，相似度基於隨機 + 玩家拍攝的質量
-            // 但為了模擬真實匹配，需要玩家真正找到相同位置才能獲得高分
+        // 計算相似度
+        function calculateSimilarity() {
+            // 模擬真實圖片比對 - 讓玩家可以嘗試多次
+            // 每次拍照相似度會在合理範圍內變動
+            let similarity;
             
-            // 這裡加入一個"匹配品質"因素，玩家可以通過調整角度來獲得更好分數
-            // 實際應用中這裡應該接入真實的圖片比對API
+            // 如果玩家之前已經提交過，提示不能重複
+            if (gameState.isSubmitted) return;
             
-            // 模擬：玩家需要多次嘗試才能獲得高匹配度
-            // 如果玩家已經嘗試過多次，相似度會提高（鼓勵玩家調整位置）
-            const attemptBonus = Math.min(20, Math.floor(Date.now() / 1000) % 30); // 模擬嘗試次數獎勵
+            // 模擬真實拍攝匹配：根據玩家調整角度，相似度會變化
+            // 隨機基礎值 40-80，鼓勵玩家多次嘗試找到最佳角度
+            const baseSimilarity = 40 + Math.random() * 50;
             
-            // 基礎相似度 - 需要玩家找到正確位置才能獲得高分
-            // 為了讓遊戲有挑戰性，這裡設定一個較低的基礎值
-            let similarity = 40 + Math.random() * 30 + attemptBonus;
+            // 如果玩家嘗試多次，給予小獎勵 (模擬找到更好角度)
+            const attemptBonus = Math.min(15, Math.floor(Math.random() * 20));
             
-            // 限制最大相似度為95（完美匹配需要真正相同的角度）
-            similarity = Math.min(95, similarity);
+            similarity = Math.min(98, baseSimilarity + attemptBonus);
             similarity = Math.floor(similarity);
             
             gameState.currentSimilarity = similarity;
             displaySimilarity(similarity);
             
-            // 只有達到85%以上才能提交
-            if (similarity >= SIMILARITY_THRESHOLD) {
-                submitBtn.disabled = false;
-                showToast(`✅ SIMILARITY: ${similarity}% - READY TO SUBMIT`);
+            // 無論相似度多少都可以提交
+            submitBtn.disabled = false;
+            
+            // 根據相似度顯示不同提示
+            if (similarity >= 90) {
+                showToast(`✅ EXCELLENT! ${similarity}% - READY TO SUBMIT`);
+            } else if (similarity >= 70) {
+                showToast(`👍 GOOD! ${similarity}% - READY TO SUBMIT`);
+            } else if (similarity >= 50) {
+                showToast(`📸 ${similarity}% - CAN SUBMIT BUT LOW REDUCTION`);
             } else {
-                submitBtn.disabled = true;
-                showToast(`⚠️ SIMILARITY: ${similarity}% - NEED ${SIMILARITY_THRESHOLD}%+ TO MATCH`, "warning");
+                showToast(`⚠️ ${similarity}% - SUBMIT WILL REDUCE LITTLE ENERGY`);
             }
         }
         
@@ -599,39 +580,53 @@
             similarityFill.style.width = percent + '%';
             similarityText.textContent = percent + '%';
             
-            if (percent >= 90) similarityFill.className = 'meter-fill perfect';
-            else if (percent >= 70) similarityFill.className = 'meter-fill good';
-            else similarityFill.className = 'meter-fill poor';
+            if (percent >= 80) similarityFill.className = 'meter-fill high';
+            else if (percent >= 50) similarityFill.className = 'meter-fill medium';
+            else similarityFill.className = 'meter-fill low';
         }
         
-        // 提交匹配 - 每關最多扣除20%
+        // 提交匹配 - 無論相似度多少都可以提交，但根據相似度決定扣除量
         function submitMatch() {
             if (gameState.isSubmitted) return;
-            if (gameState.currentSimilarity < SIMILARITY_THRESHOLD) {
-                showToast(`❌ SIMILARITY TOO LOW! NEED ${SIMILARITY_THRESHOLD}%+`, "error");
-                return;
-            }
             
-            // 根據相似度計算扣除百分比（不超過20%）
+            // 根據相似度計算扣除百分比（最高4%）
             let reduction = getReductionBySimilarity(gameState.currentSimilarity);
             
-            // 確保每關最多扣除20%
-            reduction = Math.min(MAX_REDUCTION_PER_LEVEL, reduction);
+            // 加上時間獎勵（時間剩餘越多，額外獎勵，但不超過4%總和）
+            const timeBonus = Math.min(1.5, Math.floor(gameState.timer / 120));
+            let totalReduction = reduction + timeBonus;
             
-            // 加上時間獎勵（額外最多5%）
-            const timeBonus = Math.min(5, Math.floor(gameState.timer / 60));
-            const totalReduction = Math.min(gameState.energy, reduction + timeBonus);
+            // 確保不超過每關最大扣除4%
+            totalReduction = Math.min(MAX_REDUCTION_PER_LEVEL, totalReduction);
+            totalReduction = Math.min(gameState.energy, totalReduction);
             
+            // 更新能量
             gameState.energy = Math.max(0, gameState.energy - totalReduction);
             updateEnergyBar();
             
+            // 顯示結果訊息
             let gradeText = "";
-            if (gameState.currentSimilarity >= 95) gradeText = "PERFECT MATCH! ✨";
-            else if (gameState.currentSimilarity >= 90) gradeText = "EXCELLENT MATCH! 🌟";
-            else if (gameState.currentSimilarity >= 85) gradeText = "GOOD MATCH! ✓";
-            else gradeText = "MATCH SUCCESS!";
+            let messageColor = "info";
             
-            showToast(`${gradeText} | -${totalReduction}% NEGATIVE ENERGY`);
+            if (gameState.currentSimilarity >= 90) {
+                gradeText = "✨ PERFECT MATCH! ✨";
+                messageColor = "success";
+            } else if (gameState.currentSimilarity >= 70) {
+                gradeText = "🌟 GOOD MATCH! 🌟";
+                messageColor = "success";
+            } else if (gameState.currentSimilarity >= 50) {
+                gradeText = "✓ ACCEPTABLE MATCH";
+                messageColor = "info";
+            } else {
+                gradeText = "⚠️ POOR MATCH";
+                messageColor = "warning";
+            }
+            
+            if (totalReduction > 0) {
+                showToast(`${gradeText} | -${totalReduction.toFixed(1)}% NEGATIVE ENERGY`, messageColor);
+            } else {
+                showToast(`${gradeText} | NO ENERGY REDUCED`, "warning");
+            }
             
             gameState.isSubmitted = true;
             gameState.levelCompleted = true;
