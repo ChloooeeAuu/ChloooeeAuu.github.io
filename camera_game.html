@@ -65,7 +65,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding: 15px;
-            padding-bottom: 40px;
+            padding-bottom: 50px;
             position: relative;
             z-index: 1;
             display: flex;
@@ -402,16 +402,16 @@
         const SIMILARITY_THRESHOLD = 85;  // 需要85%以上相似度才能提交
         
         // 每關最多扣除20%負能量
-        const MAX_REDUCTION_PER_LEVEL = 20;
+        const MAX_REDUCTION_PER_LEVEL = 4;
         
         // 相似度對應的扣除百分比
         function getReductionBySimilarity(similarity) {
-            if (similarity >= 95) return 20;      // 完美匹配 - 20%
-            if (similarity >= 90) return 18;      // 極佳 - 18%
-            if (similarity >= 85) return 15;      // 優秀 - 15%
-            if (similarity >= 80) return 12;      // 良好 - 12%
-            if (similarity >= 70) return 8;       // 一般 - 8%
-            if (similarity >= 60) return 5;       // 及格 - 5%
+            if (similarity >= 95) return 4;      // 完美匹配 - 20%
+            if (similarity >= 90) return 3.5;      // 極佳 - 18%
+            if (similarity >= 85) return 3;      // 優秀 - 15%
+            if (similarity >= 80) return 2.5;      // 良好 - 12%
+            if (similarity >= 70) return 2;       // 一般 - 8%
+            if (similarity >= 60) return 1;       // 及格 - 5%
             return 0;                              // 不合格，不扣除
         }
         
