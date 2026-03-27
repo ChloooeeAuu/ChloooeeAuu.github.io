@@ -225,6 +225,19 @@
         .btn:active { background: #ff3333; color: black; transform: scale(0.98); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        .btn-boss {
+            border-color: #ff6600;
+            color: #ff6600;
+            background: rgba(255, 102, 0, 0.1);
+            animation: bossPulse 1s infinite;
+        }
+        .btn-boss:active { background: #ff6600; color: black; }
+        
+        @keyframes bossPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 102, 0, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 102, 0, 0); }
+        }
+
         #video {
             width: 100%;
             height: 100%;
@@ -262,6 +275,9 @@
             margin-top: 10px;
             margin-bottom: 30px;
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .toast {
@@ -350,8 +366,9 @@
             <div id="cameraStatus" style="text-align:center; margin-top:10px; font-size:12px">OFFLINE</div>
         </div>
 
-        <div class="bottom-buttons">
+        <div class="bottom-buttons" id="bottomButtons">
             <button class="btn" id="nextLevelBtn" onclick="nextLevel()" style="display:none">⏭ NEXT LEVEL</button>
+            <button class="btn btn-boss" id="bossFightBtn" onclick="startBossFight()" style="display:none">⚔️ FIGHT WITH 遲兔 ⚔️</button>
         </div>
         
         <div class="area-card" id="gateIntroCard">
@@ -377,23 +394,20 @@
         
         const LEVEL_TIMES = [300, 240, 180, 120, 60];
         
-        // 每關最多扣除4%負能量
         const MAX_REDUCTION_PER_LEVEL = 4;
         
-        // 根據相似度計算扣除百分比 (最高4%)
         function getReductionBySimilarity(similarity) {
-            if (similarity >= 95) return 4.0;      // 完美匹配 - 4%
-            if (similarity >= 90) return 3.5;      // 極佳 - 3.5%
-            if (similarity >= 85) return 3.0;      // 優秀 - 3%
-            if (similarity >= 80) return 2.5;      // 良好 - 2.5%
-            if (similarity >= 75) return 2.0;      // 不錯 - 2%
-            if (similarity >= 70) return 1.5;      // 一般 - 1.5%
-            if (similarity >= 65) return 1.0;      // 及格 - 1%
-            if (similarity >= 60) return 0.5;      // 勉強 - 0.5%
-            return 0;                               // 0% 不扣除
+            if (similarity >= 95) return 4.0;
+            if (similarity >= 90) return 3.5;
+            if (similarity >= 85) return 3.0;
+            if (similarity >= 80) return 2.5;
+            if (similarity >= 75) return 2.0;
+            if (similarity >= 70) return 1.5;
+            if (similarity >= 65) return 1.0;
+            if (similarity >= 60) return 0.5;
+            return 0;
         }
         
-        // 遊戲狀態
         let gameState = {
             currentLevel: 1,
             energy: 100,
@@ -419,6 +433,7 @@
         const takePhotoBtn = document.getElementById('takePhotoBtn');
         const submitBtn = document.getElementById('submitBtn');
         const nextLevelBtn = document.getElementById('nextLevelBtn');
+        const bossFightBtn = document.getElementById('bossFightBtn');
         const timerDisplay = document.getElementById('timer');
         const levelInfo = document.getElementById('levelInfo');
         const energyFill = document.getElementById('energyFill');
@@ -430,10 +445,13 @@
         
         // ========== 開始匹配 ==========
         async function startMatching() {
-            gateIntroCard.style.display = 'none';
-            locationHeader.style.display = 'block';
-            challengeArea.style.display = 'block';
-            cameraArea.style.display = 'block';
+            console.log("startMatching called");
+            
+            // 隱藏介紹卡片
+            if (gateIntroCard) gateIntroCard.style.display = 'none';
+            if (locationHeader) locationHeader.style.display = 'block';
+            if (challengeArea) challengeArea.style.display = 'block';
+            if (cameraArea) cameraArea.style.display = 'block';
             
             await initCamera();
             startLevel();
@@ -442,22 +460,36 @@
         // 初始化相機
         async function initCamera() {
             try {
+                showToast("REQUESTING CAMERA ACCESS...");
+                
                 const constraints = { video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'environment' } };
                 gameState.camera = await navigator.mediaDevices.getUserMedia(constraints);
                 video.srcObject = gameState.camera;
+                
                 await new Promise(resolve => { video.onloadedmetadata = () => { video.play(); resolve(); }; });
                 video.classList.add('visible');
-                document.getElementById('cameraPlaceholder').style.display = 'none';
+                
+                const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+                if (cameraPlaceholder) cameraPlaceholder.style.display = 'none';
+                
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 gameState.cameraActive = true;
-                document.getElementById('cameraStatus').textContent = 'ONLINE';
-                document.getElementById('cameraStatus').style.color = '#00ff00';
-                takePhotoBtn.disabled = false;
+                
+                const cameraStatus = document.getElementById('cameraStatus');
+                if (cameraStatus) {
+                    cameraStatus.textContent = 'ONLINE';
+                    cameraStatus.style.color = '#00ff00';
+                }
+                
+                if (takePhotoBtn) takePhotoBtn.disabled = false;
+                
                 showToast("✅ CAMERA READY");
             } catch (error) {
+                console.error("Camera error:", error);
                 showToast("❌ CAMERA ACCESS DENIED", "error");
-                document.getElementById('cameraStatus').textContent = 'OFFLINE';
+                const cameraStatus = document.getElementById('cameraStatus');
+                if (cameraStatus) cameraStatus.textContent = 'OFFLINE';
             }
         }
         
@@ -481,13 +513,13 @@
             submitBtn.disabled = true;
             submitBtn.style.display = 'block';
             nextLevelBtn.style.display = 'none';
+            if (bossFightBtn) bossFightBtn.style.display = 'none';
             takePhotoBtn.disabled = false;
             takePhotoBtn.textContent = "📸 CAPTURE";
             
             startTimer(timeLimit);
         }
         
-        // 計時器
         function startTimer(seconds) {
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
             gameState.timer = seconds;
@@ -523,7 +555,6 @@
             nextLevelBtn.textContent = "🔄 RETRY LEVEL";
         }
         
-        // 拍照功能
         function takePhoto() {
             if (!gameState.cameraActive) { showToast("CAMERA OFFLINE", "error"); return; }
             if (gameState.isSubmitted) { showToast("LEVEL ALREADY COMPLETED", "warning"); return; }
@@ -538,32 +569,19 @@
             calculateSimilarity();
         }
         
-        // 計算相似度
         function calculateSimilarity() {
-            // 模擬真實圖片比對 - 讓玩家可以嘗試多次
-            // 每次拍照相似度會在合理範圍內變動
-            let similarity;
-            
-            // 如果玩家之前已經提交過，提示不能重複
             if (gameState.isSubmitted) return;
             
-            // 模擬真實拍攝匹配：根據玩家調整角度，相似度會變化
-            // 隨機基礎值 40-80，鼓勵玩家多次嘗試找到最佳角度
             const baseSimilarity = 40 + Math.random() * 50;
-            
-            // 如果玩家嘗試多次，給予小獎勵 (模擬找到更好角度)
             const attemptBonus = Math.min(15, Math.floor(Math.random() * 20));
-            
-            similarity = Math.min(98, baseSimilarity + attemptBonus);
+            let similarity = Math.min(98, baseSimilarity + attemptBonus);
             similarity = Math.floor(similarity);
             
             gameState.currentSimilarity = similarity;
             displaySimilarity(similarity);
             
-            // 無論相似度多少都可以提交
             submitBtn.disabled = false;
             
-            // 根據相似度顯示不同提示
             if (similarity >= 90) {
                 showToast(`✅ EXCELLENT! ${similarity}% - READY TO SUBMIT`);
             } else if (similarity >= 70) {
@@ -585,26 +603,19 @@
             else similarityFill.className = 'meter-fill low';
         }
         
-        // 提交匹配 - 無論相似度多少都可以提交，但根據相似度決定扣除量
         function submitMatch() {
             if (gameState.isSubmitted) return;
             
-            // 根據相似度計算扣除百分比（最高4%）
             let reduction = getReductionBySimilarity(gameState.currentSimilarity);
-            
-            // 加上時間獎勵（時間剩餘越多，額外獎勵，但不超過4%總和）
             const timeBonus = Math.min(1.5, Math.floor(gameState.timer / 120));
             let totalReduction = reduction + timeBonus;
             
-            // 確保不超過每關最大扣除4%
             totalReduction = Math.min(MAX_REDUCTION_PER_LEVEL, totalReduction);
             totalReduction = Math.min(gameState.energy, totalReduction);
             
-            // 更新能量
             gameState.energy = Math.max(0, gameState.energy - totalReduction);
             updateEnergyBar();
             
-            // 顯示結果訊息
             let gradeText = "";
             let messageColor = "info";
             
@@ -635,15 +646,10 @@
             
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
             
-            // 檢查是否通關
             if (gameState.currentLevel === 5) {
-                if (gameState.energy <= 0) {
-                    showToast("🏆 ALL LEVELS CLEARED! NEGATIVE ENERGY ELIMINATED!");
-                    nextLevelBtn.textContent = "🎉 COMPLETE 🎉";
-                } else {
-                    nextLevelBtn.textContent = "🏆 FINISH";
-                }
-                nextLevelBtn.style.display = 'block';
+                nextLevelBtn.style.display = 'none';
+                if (bossFightBtn) bossFightBtn.style.display = 'block';
+                showToast("🏆 GATE AREA COMPLETED! BOSS FIGHT UNLOCKED!");
             } else {
                 nextLevelBtn.style.display = 'block';
                 nextLevelBtn.textContent = "⏭ NEXT LEVEL";
@@ -657,7 +663,6 @@
             if (gameState.energy <= 10) energyFill.style.background = "#00ff00";
         }
         
-        // 下一關
         function nextLevel() {
             if (gameState.currentLevel < 5) {
                 gameState.currentLevel++;
@@ -668,14 +673,166 @@
                 similarityMeter.style.display = 'none';
                 submitBtn.disabled = true;
                 nextLevelBtn.style.display = 'none';
+                if (bossFightBtn) bossFightBtn.style.display = 'none';
                 takePhotoBtn.disabled = false;
                 takePhotoBtn.textContent = "📸 CAPTURE";
                 
                 startLevel();
-            } else {
-                showToast("🎉 CONGRATULATIONS! MISSION COMPLETE!");
-                setTimeout(() => { window.location.href = 'index.html'; }, 2000);
             }
+        }
+        
+        // ========== BOSS 戰鬥 ==========
+        function startBossFight() {
+            showToast("⚔️ FIGHT WITH 遲兔 - INITIATING BATTLE... ⚔️");
+            
+            // 隱藏所有遊戲元素
+            const elementsToHide = [
+                '.status-bar', '.energy-container', '#locationHeader', 
+                '#challengeArea', '#cameraArea', '#bottomButtons', '#gateIntroCard'
+            ];
+            elementsToHide.forEach(selector => {
+                const el = document.querySelector(selector);
+                if (el) el.style.display = 'none';
+            });
+            
+            loadBossFightGame();
+        }
+        
+        function loadBossFightGame() {
+            const bossHTML = `
+                <div id="bossFightContainer" style="width:100%; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+                    <div style="text-align:center;">
+                        <h1 style="font-size:2rem; color:#ff6600; text-shadow:0 0 15px #f60; margin:0;">⚔️ POWER CLASH ⚔️</h1>
+                        <h2 style="font-size:1.2rem; color:#ffaa44;">VS 遲兔</h2>
+                        <div id="bossTimer" style="font-family:monospace; font-size:2rem; color:#ffcc00; margin:10px 0;">00:00.00</div>
+                    </div>
+                    
+                    <div style="width:92%; max-width:500px;">
+                        <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:8px;">
+                            <span style="color:#ff6600">🐇 遲兔 [BOSS]</span>
+                            <span style="color:#ff6666">🔥 YOU</span>
+                        </div>
+                        <div style="width:100%; height:50px; background:#111; border:4px solid #fff; position:relative; overflow:hidden;">
+                            <div id="compFill" style="position:absolute; left:0; height:100%; background:linear-gradient(to right, #630, #f60); width:50%; transition:width 0.04s linear;"></div>
+                            <div id="plyFill" style="position:absolute; right:0; height:100%; background:linear-gradient(to left, #600, #f00); width:50%; transition:width 0.04s linear;"></div>
+                            <div id="clashSpark" style="position:absolute; top:0; bottom:0; width:6px; background:#fff; box-shadow:0 0 20px 8px #fff; transform:translateX(-50%); left:50%; transition:left 0.04s linear;"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="bossMsg" style="font-size:2rem; font-weight:900; height:80px; text-align:center; margin:20px 0;"></div>
+                    
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:15px;">
+                        <div id="tapZone" style="width:180px; height:180px; background:radial-gradient(circle, #ff8844 0%, #ff4400 100%); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border:12px solid rgba(255,255,255,0.2); box-shadow:0 0 40px rgba(255,68,0,0.6); cursor:pointer;">⚡ STRIKE ⚡</div>
+                        <button id="bossRestartBtn" style="padding:10px 20px; background:#222; color:#fff; border:1px solid #ff6600; border-radius:5px; cursor:pointer;">RESTART BATTLE</button>
+                        <button id="bossExitBtn" style="padding:10px 20px; background:#222; color:#ff6600; border:1px solid #ff6600; border-radius:5px; cursor:pointer;">← EXIT TO GATE</button>
+                    </div>
+                </div>
+            `;
+            
+            const container = document.querySelector('.game-container');
+            container.innerHTML = bossHTML;
+            
+            initBossFight();
+        }
+        
+        function initBossFight() {
+            let pos = 50;
+            let active = true;
+            let cpuTimer;
+            let clockTimer;
+            let startTime;
+            let elapsedTime = 0;
+            
+            const plyPower = 3.5;
+            const cpuPower = 4.2;
+            const cpuInterval = 120;
+            
+            const compFill = document.getElementById('compFill');
+            const plyFill = document.getElementById('plyFill');
+            const spark = document.getElementById('clashSpark');
+            const timerDisplay = document.getElementById('bossTimer');
+            const msgArea = document.getElementById('bossMsg');
+            const tapZone = document.getElementById('tapZone');
+            
+            function formatTime(ms) {
+                let totalSeconds = ms / 1000;
+                let m = Math.floor(totalSeconds / 60);
+                let s = Math.floor(totalSeconds % 60);
+                let h = Math.floor((ms % 1000) / 10);
+                return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${h.toString().padStart(2, '0')}`;
+            }
+            
+            function updateClock() {
+                if (!active) return;
+                elapsedTime = Date.now() - startTime;
+                timerDisplay.innerText = formatTime(elapsedTime);
+                clockTimer = requestAnimationFrame(updateClock);
+            }
+            
+            function updateUI() {
+                if (spark) spark.style.left = pos + "%";
+                if (compFill) compFill.style.width = pos + "%";
+                if (plyFill) plyFill.style.width = (100 - pos) + "%";
+                
+                if (pos <= 0) endGame("WIN");
+                if (pos >= 100) endGame("LOSE");
+            }
+            
+            function tapHandler(e) {
+                e.preventDefault();
+                if (!active) return;
+                if (navigator.vibrate) navigator.vibrate(20);
+                pos -= plyPower;
+                if (pos < 0) pos = 0;
+                updateUI();
+            }
+            
+            function cpuCycle() {
+                if (!active) return;
+                pos += cpuPower;
+                if (pos > 100) pos = 100;
+                updateUI();
+                cpuTimer = setTimeout(cpuCycle, cpuInterval);
+            }
+            
+            function endGame(res) {
+                active = false;
+                clearTimeout(cpuTimer);
+                cancelAnimationFrame(clockTimer);
+                
+                if (res === "WIN") {
+                    msgArea.innerHTML = `<span style="color:#0af">✨ VICTORY! 遲兔 DEFEATED! ✨</span><div style="font-size:1rem; color:#aaa;">Time: ${formatTime(elapsedTime)}</div>`;
+                } else {
+                    msgArea.innerHTML = `<span style="color:#f33">💀 DEFEATED... TRY AGAIN! 💀</span><div style="font-size:0.9rem; color:#666;">Survived: ${formatTime(elapsedTime)}</div>`;
+                }
+            }
+            
+            function resetBattle() {
+                pos = 50;
+                active = true;
+                elapsedTime = 0;
+                timerDisplay.innerText = "00:00.00";
+                msgArea.innerHTML = "";
+                updateUI();
+                
+                startTime = Date.now();
+                updateClock();
+                clearTimeout(cpuTimer);
+                setTimeout(cpuCycle, 800);
+            }
+            
+            function exitBattle() {
+                window.location.href = 'gate.html';
+            }
+            
+            if (tapZone) tapZone.addEventListener('pointerdown', tapHandler);
+            const restartBtn = document.getElementById('bossRestartBtn');
+            const exitBtn = document.getElementById('bossExitBtn');
+            if (restartBtn) restartBtn.addEventListener('click', resetBattle);
+            if (exitBtn) exitBtn.addEventListener('click', exitBattle);
+            
+            resetBattle();
+            msgArea.innerHTML = "<div style='font-size:1.2rem; color:#ffcc00'>⚡ TAP TO STRIKE! DEFEAT 遲兔! ⚡</div>";
         }
         
         function showToast(msg, type = "info") {
@@ -688,7 +845,6 @@
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
         
-        // 清理資源
         window.addEventListener('beforeunload', () => {
             if (gameState.camera) gameState.camera.getTracks().forEach(t => t.stop());
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
