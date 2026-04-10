@@ -335,7 +335,7 @@
 
         <div class="location-header" id="locationHeader" style="display: none;">
             <div class="location-name">🏛️ GATE AREA</div>
-            <div class="level-badge" id="levelInfo">LEVEL 1/5 | TIME: 5:00</div>
+            <div class="level-badge" id="levelInfo">LEVEL 1/2 | TIME: 5:00</div>
         </div>
 
         <div class="area-card" id="challengeArea" style="display: none;">
@@ -384,15 +384,14 @@
 
     <script>
         // ========== 遊戲設定 ==========
+        // 減少到 2 張隨機照片
         const LEVEL_IMAGES = [
             "https://i.postimg.cc/ThffJG5g/IMG-9773.jpg",
-            "https://i.postimg.cc/3k4TxxVs/IMG-9775.jpg",
-            "https://i.postimg.cc/5XYV22TG/IMG-9776.jpg",
-            "https://i.postimg.cc/pmhHLL3x/IMG-9778.jpg",
-            "https://i.postimg.cc/K16ykyyF/IMG-9779.jpg"
+            "https://i.postimg.cc/3k4TxxVs/IMG-9775.jpg"
         ];
         
-        const LEVEL_TIMES = [300, 240, 180, 120, 60];
+        // 對應的限時 (秒) - 2個關卡
+        const LEVEL_TIMES = [300, 240];  // 5分鐘, 4分鐘
         
         const MAX_REDUCTION_PER_LEVEL = 4;
         
@@ -447,7 +446,6 @@
         async function startMatching() {
             console.log("startMatching called");
             
-            // 隱藏介紹卡片
             if (gateIntroCard) gateIntroCard.style.display = 'none';
             if (locationHeader) locationHeader.style.display = 'block';
             if (challengeArea) challengeArea.style.display = 'block';
@@ -457,7 +455,6 @@
             startLevel();
         }
         
-        // 初始化相機
         async function initCamera() {
             try {
                 showToast("REQUESTING CAMERA ACCESS...");
@@ -493,7 +490,6 @@
             }
         }
         
-        // 開始當前關卡
         function startLevel() {
             const levelIdx = gameState.currentLevel - 1;
             const timeLimit = LEVEL_TIMES[levelIdx];
@@ -503,7 +499,7 @@
             targetImg.style.display = 'block';
             targetPlaceholder.style.display = 'none';
             
-            levelInfo.innerHTML = `LEVEL ${gameState.currentLevel}/5 | TIME: ${Math.floor(timeLimit/60)}:${(timeLimit%60).toString().padStart(2,'0')}`;
+            levelInfo.innerHTML = `LEVEL ${gameState.currentLevel}/2 | TIME: ${Math.floor(timeLimit/60)}:${(timeLimit%60).toString().padStart(2,'0')}`;
             
             gameState.isSubmitted = false;
             gameState.levelCompleted = false;
@@ -646,7 +642,8 @@
             
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
             
-            if (gameState.currentLevel === 5) {
+            // 檢查是否完成所有 2 個 Level
+            if (gameState.currentLevel === 2) {
                 nextLevelBtn.style.display = 'none';
                 if (bossFightBtn) bossFightBtn.style.display = 'block';
                 showToast("🏆 GATE AREA COMPLETED! BOSS FIGHT UNLOCKED!");
@@ -664,7 +661,7 @@
         }
         
         function nextLevel() {
-            if (gameState.currentLevel < 5) {
+            if (gameState.currentLevel < 2) {
                 gameState.currentLevel++;
                 gameState.isSubmitted = false;
                 gameState.levelCompleted = false;
