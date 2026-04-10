@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Match AR! - 被選召者</title>
     <style>
-        /* 引入像素風與科幻粗體字體 */
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700;900&display=swap');
 
         * {
@@ -15,7 +14,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 滿屏背景，確保黑色 */
         body, html {
             width: 100%;
             height: 100%;
@@ -24,40 +22,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #ff0000; /* 鮮紅主色 */
+            color: #ff0000;
         }
 
-        /* ========================================= */
-        /* 電話屏幕仿真容器 (鎖定比例 9:16) */
-        /* ========================================= */
+        /* 電話屏幕仿真容器 */
         .phone-screen {
             position: relative;
             width: 100vw;
-            height: 177.78vw; /* 9:16 比例 */
-            max-height: 100vh; /* 不超過螢幕高度 */
-            max-width: 56.25vh; /* 對應高度的 9:16 寬度 */
+            height: 177.78vw; 
+            max-height: 100vh; 
+            max-width: 56.25vh; 
             background: #050505;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 50px rgba(255, 0, 0, 0.2); /* 淡淡的紅光暈 */
             z-index: 1;
         }
 
-        /* 背景：Cyberpunk 網格與掃描線 */
-        .cyber-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 255, 0.02), rgba(0, 255, 0, 0.05));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        /* 監視器濾鏡效果 */
+        /* 監視器濾鏡 */
         .crt-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -67,13 +50,12 @@
             z-index: 10;
         }
 
-        /* 前置攝像頭容器 (監視畫面) */
+        /* 監視器外框 */
         .monitor-frame {
             position: relative;
             width: 85%;
             height: 60%;
             border: 2px solid #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
             overflow: hidden;
             background: #111;
             display: flex;
@@ -86,97 +68,97 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* 監視器色調：高對比、單色 */
-            filter: grayscale(100%) contrast(140%) brightness(90%) sepia(30%) hue-rotate(-30deg); 
-            transform: scaleX(-1); /* 鏡像 */
+            filter: grayscale(100%) contrast(140%) brightness(90%) sepia(30%); 
+            transform: scaleX(-1);
             opacity: 0.9;
         }
 
-        /* 像素風 UI 元素 */
+        /* 負面怪圖片樣式 */
+        #chosenBear {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%; /* 調整大小以適應畫面 */
+            height: auto;
+            opacity: 0; 
+            z-index: 5; 
+            pointer-events: none;
+            transition: opacity 1s ease;
+            /* 讓像素風圖片更清晰，不會模糊 */
+            image-rendering: pixelated; 
+        }
+
+        /* UI 文字 */
         .status-ui {
             position: absolute;
-            top: 8px; left: 8px;
+            top: 10px; left: 10px;
             font-family: 'Press Start 2P', cursive;
-            font-size: 7px;
-            line-height: 1.6;
-            color: #00ffff; /* 保持青色對比 */
-            text-shadow: 0 0 3px #00ffff;
-            pointer-events: none;
+            font-size: 8px;
+            color: #00ffff;
+            z-index: 6;
             text-align: left;
         }
 
         .rec-dot {
             display: inline-block;
-            width: 7px; height: 7px;
+            width: 6px; height: 6px;
             background: #ff0000;
             border-radius: 50%;
-            margin-right: 4px;
+            margin-right: 5px;
             animation: blink 1s infinite;
         }
 
-        /* ========================================= */
-        /* 關鍵修改：「被選中者」文字樣式 */
-        /* ========================================= */
+        /* 文字樣式：粗體鮮紅、無立體感 */
         .chosen-one-text {
             position: absolute;
             width: 90%;
             text-align: center;
-            /* 使用更粗、更有力的科幻字體 */
             font-family: 'Orbitron', sans-serif;
-            font-weight: 900; /* 超粗體 */
-            font-size: 20px;
-            /* 關鍵：純鮮紅色 */
+            font-weight: 900; 
+            font-size: 22px;
             color: #ff0000; 
-            /* 移除所有立體和陰影效果 */
             text-shadow: none; 
             opacity: 0;
             z-index: 20;
-            letter-spacing: 1px;
-            line-height: 1.3;
+            pointer-events: none;
+            line-height: 1.4;
         }
 
-        .chosen-one-text.show {
-            animation: fadeIn 0.8s forwards; /* 簡單的淡入，不使用複雜動畫 */
-        }
-
-        /* 黑色遮罩 (轉場) */
+        /* 黑色遮罩 */
         #blackout {
-            position: fixed; /* 覆蓋整個體感螢幕，不只是電話容器 */
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: black;
             opacity: 0;
             pointer-events: none;
-            z-index: 100; /* 最高層級 */
+            z-index: 100;
             transition: opacity 1.2s ease;
         }
 
         /* Start 按鈕 */
         #startBtn {
             position: absolute;
-            font-family: 'Press Start 2P', cursive; /* 按鈕保持像素風 */
-            padding: 12px 30px;
+            font-family: 'Press Start 2P', cursive;
+            padding: 15px 35px;
             background: transparent;
             border: 3px solid #ff0000;
             color: #ff0000;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
             opacity: 0;
             z-index: 110;
             display: none;
-            transition: all 0.3s;
             text-transform: uppercase;
         }
 
         #startBtn:active {
             background: #ff0000;
             color: #000;
-            box-shadow: 0 0 20px #ff0000;
         }
 
-        /* 動畫集 */
         @keyframes blink { 50% { opacity: 0; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     </style>
 </head>
 <body>
@@ -185,15 +167,14 @@
 <div id="blackout"></div>
 
 <div class="phone-screen">
-    <div class="cyber-bg"></div>
-
     <div class="monitor-frame" id="monitorFrame">
         <div class="status-ui">
             <span class="rec-dot"></span>REC<br>
-            CAM: 01<br>
-            LOC: UNKNOWN
+            CAM: 01
         </div>
         <video id="userVideo" autoplay playsinline muted></video>
+        
+        <img id="chosenBear" src="負面怪02-kind1.png" alt="Chosen Monster">
     </div>
 
     <div class="chosen-one-text" id="chosenText">
@@ -201,75 +182,68 @@
         (YOU'RE THE CHOSEN ONE)
     </div>
 
-    <button id="startBtn" onclick="nextPage()">開始  <br> (START)</button>
+    <button id="startBtn" onclick="nextPage()">開始<br>(START)</button>
 </div>
 
 <script>
     const video = document.getElementById('userVideo');
     const chosenText = document.getElementById('chosenText');
+    const bearImg = document.getElementById('chosenBear');
     const blackout = document.getElementById('blackout');
     const startBtn = document.getElementById('startBtn');
     const monitorFrame = document.getElementById('monitorFrame');
 
-    // 1. 開啟攝像頭
     async function initCamera() {
         try {
-            // 請求前置攝像頭
             const stream = await navigator.mediaDevices.getUserMedia({ 
                 video: { facingMode: "user" }, 
                 audio: false 
             });
             video.srcObject = stream;
-            // 確保影片加載後再開始序列
-            video.onloadedmetadata = () => {
-                startSequence();
-            };
+            video.onloadedmetadata = () => startSequence();
         } catch (err) {
-            console.error("無法開啟攝像頭: ", err);
-            // 若失敗（如拒絕權限），依然跑流程，只是沒畫面
+            console.warn("Camera failed, continuing sequence.");
             startSequence();
         }
     }
 
-    // 2. 動畫排程邏輯 (嚴格遵守時間要求)
     function startSequence() {
-        // [A] 開了頁面後5秒，彈出文字
+        // [1] 開頁面後 5 秒彈出文字與照片
         setTimeout(() => {
-            chosenText.classList.add('show');
+            // 文字淡入
+            chosenText.style.animation = "fadeIn 1s forwards";
+            chosenText.style.opacity = "1";
             
-            // [B] 等三秒 (總計第8秒)
+            // 照片 50% 透明度彈出
+            bearImg.style.opacity = "0.5";
+            
+            // [2] 等三秒 (總計 8 秒)
             setTimeout(() => {
                 // 畫面一黑
                 blackout.style.opacity = '1';
                 
-                // [C] 黑屏持續 1.5 秒 (用於緩衝轉場)
+                // [3] 黑屏緩衝
                 setTimeout(() => {
-                    // 隱藏監視畫面和文字
                     monitorFrame.style.display = 'none';
                     chosenText.style.display = 'none';
                     
-                    // 讓黑色遮罩慢慢淡出，露出 Start 按鈕
+                    // 黑色淡出露出按鈕
                     blackout.style.opacity = '0';
                     startBtn.style.display = 'block';
                     
-                    // Start 按鈕緩緩浮現
                     setTimeout(() => {
                         startBtn.style.animation = 'fadeIn 1.5s forwards';
                         startBtn.style.opacity = '1';
                     }, 100);
-
                 }, 1500); 
-
             }, 3000);
         }, 5000);
     }
 
     function nextPage() {
-        // 跳轉到下一個頁面
         window.location.href = 'camera_game.html';
     }
 
-    // 啟動
     window.onload = initCamera;
 </script>
 
