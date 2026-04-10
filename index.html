@@ -73,20 +73,23 @@
             opacity: 0.9;
         }
 
-        /* 負面怪圖片樣式 */
+        /* 負面怪圖片樣式 - 修正版 */
         #chosenBear {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 70%; /* 調整大小以適應畫面 */
+            width: auto;
+            max-width: 80%;
             height: auto;
+            max-height: 70%;
             opacity: 0; 
             z-index: 5; 
             pointer-events: none;
             transition: opacity 1s ease;
-            /* 讓像素風圖片更清晰，不會模糊 */
-            image-rendering: pixelated; 
+            /* 確保圖片清晰顯示 */
+            image-rendering: auto;
+            object-fit: contain;
         }
 
         /* UI 文字 */
@@ -174,7 +177,8 @@
         </div>
         <video id="userVideo" autoplay playsinline muted></video>
         
-        <img id="chosenBear" src="負面怪02-kind1.png" alt="Chosen Monster">
+        <!-- 使用修正後的圖片連結，確保能正確載入 -->
+        <img id="chosenBear" src="https://i.postimg.cc/t1pZ0LR6/fu-mian-guai02-kind1.png" alt="Chosen Monster">
     </div>
 
     <div class="chosen-one-text" id="chosenText">
@@ -214,8 +218,8 @@
             chosenText.style.animation = "fadeIn 1s forwards";
             chosenText.style.opacity = "1";
             
-            // 照片 50% 透明度彈出
-            bearImg.style.opacity = "0.5";
+            // 照片淡入至完全不透明 (之前是 0.5，現在改為完全顯示)
+            bearImg.style.opacity = "0.8";
             
             // [2] 等三秒 (總計 8 秒)
             setTimeout(() => {
