@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Match AR! - Pixel Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pixel-border: #4a5d23; /* 深綠色邊框 */
+            --pixel-bg: #f5f7d1;    /* 淺黃綠色底 */
+            --pixel-accent: #a8d56f; /* 明亮綠色 */
+            --pixel-text: #2d4a22;   /* 深綠色文字 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: pixelated; /* 強化像素邊緣感 */
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--pixel-bg);
+            font-family: 'VT323', monospace;
+        }
+
+        /* 背景照片：請將您喜歡的背景圖存為 background.png */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('background.png') no-repeat center center;
+            background-size: cover;
+            /* 套用淺色調濾鏡 */
+            filter: brightness(1.1) contrast(1.1); 
+            z-index: -1;
+        }
+
+        /* 角色容器：人物設定得更大 */
+        .character-container {
+            position: absolute;
+            bottom: 220px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 5%;
+            z-index: 5;
+        }
+
+        .character {
+            width: 320px; /* 大尺寸角色 */
+            height: auto;
+            transition: all 0.3s steps(2);
+            filter: brightness(0.6) grayscale(0.2);
+            transform: scale(0.95);
+        }
+
+        .character.active {
+            filter: brightness(1) grayscale(0);
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        /* 像素風格對話框 */
+        .pixel-dialogue {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 750px;
+            background: rgba(255, 254, 240, 0.95); /* 奶油白背景 */
+            border: 6px solid var(--pixel-border);
+            /* 經典像素邊框效果 */
+            box-shadow: 
+                0 6px 0 -2px var(--pixel-border),
+                0 -6px 0 -2px var(--pixel-border),
+                6px 0 0 -2px var(--pixel-border),
+                -6px 0 0 -2px var(--pixel-border);
+            padding: 20px;
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        .name-tag {
+            font-size: 32px;
+            color: white;
+            margin-bottom: 10px;
+            display: inline-block;
+            background: var(--pixel-accent);
+            padding: 0 15px;
+            border: 3px solid var(--pixel-border);
+            font-weight: bold;
+        }
+
+        .message {
+            font-size: 30px;
+            color: var(--pixel-text);
+            line-height: 1.2;
+            margin-top: 10px;
+            min-height: 70px;
+        }
+
+        .next-hint {
+            position: absolute;
+            right: 20px;
+            bottom: 15px;
+            font-size: 24px;
+            color: var(--pixel-accent);
+            animation: bounce 0.6s steps(2) infinite;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(5px); }
+        }
+
+        /* 任務總結畫面 */
+        #summary-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--pixel-bg);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .mission-box {
+            border: 8px solid var(--pixel-border);
+            background: white;
+            padding: 30px;
+            max-width: 550px;
+            box-shadow: 10px 10px 0 var(--pixel-border);
+        }
+
+        .mission-title {
+            font-size: 52px;
+            color: #d32f2f;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .mission-text {
+            font-size: 28px;
+            color: var(--pixel-text);
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        .btn-start {
+            font-family: 'VT323', monospace;
+            font-size: 38px;
+            background: var(--pixel-accent);
+            color: white;
+            border: 4px solid var(--pixel-border);
+            padding: 10px 50px;
+            cursor: pointer;
+            box-shadow: 6px 6px 0 var(--pixel-border);
+            transition: 0.1s;
+        }
+
+        .btn-start:active {
+            box-shadow: 0 0 0 var(--pixel-border);
+            transform: translate(6px, 6px);
+        }
+    </style>
+</head>
+<body onclick="nextStep()">
+
+    <div class="background"></div>
+
+    <div class="character-container">
+        <img id="chitu" class="character" src="chi-tu.png">
+        <img id="shuchong" class="character" src="shu-chong.png">
+    </div>
+
+    <div class="pixel-dialogue" id="dialogue-box">
+        <div class="name-tag" id="speaker-name">遲兔</div>
+        <div class="message" id="message-text">Initializing...</div>
+        <div class="next-hint">NEXT ➔</div>
+    </div>
+
+    <div id="summary-screen">
+        <div class="mission-box">
+            <h1 class="mission-title">MISSION BRIEF</h1>
+            <p class="mission-text">
+                CHI TU is late as always!<br>
+                He's been cursed by a negative monster.<br>
+                Now he's transformed into an object in the <b>GATE AREA</b>.<br><br>
+                <b>Find the object CHI TU has become!</b>
+            </p>
+            <button class="btn-start" onclick="window.location.href='camera_game.html'">START ➔</button>
+        </div>
+    </div>
+
+    <script>
+        // 名字設為中文，內容設為英文
+        const story = [
+            { name: "遲兔", text: "I'm late! I'm late! Oh no no no!!!", active: "chitu" },
+            { name: "主角（書蟲）", text: "Wait! What happened to you?", active: "shuchong" },
+            { name: "遲兔", text: "I'm so late... help me get back!", active: "chitu" }
+        ];
+
+        let currentLine = 0;
+
+        function updateUI() {
+            if (currentLine < story.length) {
+                const line = story[currentLine];
+                document.getElementById('speaker-name').innerText = line.name;
+                
+                // 打字機效果
+                typeWriter(line.text);
+                
+                // 切換角色亮度
+                document.getElementById('chitu').className = 'character' + (line.active === 'chitu' ? ' active' : '');
+                document.getElementById('shuchong').className = 'character' + (line.active === 'shuchong' ? ' active' : '');
+            } else {
+                document.getElementById('dialogue-box').style.display = 'none';
+                document.getElementById('summary-screen').style.display = 'flex';
+            }
+        }
+
+        function typeWriter(text) {
+            let i = 0;
+            const target = document.getElementById('message-text');
+            target.innerText = "";
+            function typing() {
+                if (i < text.length) {
+                    target.innerText += text.charAt(i);
+                    i++;
+                    setTimeout(typing, 30);
+                }
+            }
+            typing();
+        }
+
+        function nextStep() {
+            currentLine++;
+            updateUI();
+        }
+
+        // 初始化
+        window.onload = updateUI;
+    </script>
+</body>
+</html>
