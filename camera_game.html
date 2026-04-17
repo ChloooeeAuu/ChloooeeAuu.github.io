@@ -19,18 +19,19 @@
             overflow: hidden;
             position: fixed;
             font-family: 'Orbitron', sans-serif;
-            background: #000;
-            color: white;
+            background: #f0f7e6;
+            color: #2d4a22;
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* 柔和彩色背景 */
         .cyber-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, rgba(0,0,0,0.95) 0%, rgba(20,20,20,0.9) 100%);
+            background: linear-gradient(145deg, #e8f5e9 0%, #fff9c4 50%, #e8f5e9 100%);
             z-index: -2;
         }
 
@@ -40,8 +41,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(255,51,51,0.1) 0%, transparent 70%);
-            animation: energyPulse 4s ease-in-out infinite;
+            background: radial-gradient(circle at 30% 40%, rgba(200, 230, 150, 0.3) 0%, rgba(255, 245, 180, 0.2) 70%);
+            animation: energyPulse 6s ease-in-out infinite;
             pointer-events: none;
             z-index: -1;
         }
@@ -52,7 +53,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 4px);
+            background: repeating-linear-gradient(0deg, rgba(180, 210, 140, 0.08) 0px, rgba(180, 210, 140, 0.08) 2px, transparent 2px, transparent 6px);
             pointer-events: none;
             z-index: 10;
         }
@@ -71,26 +72,33 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* 毛玻璃狀態欄 */
         .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 15px;
-            background: rgba(0,0,0,0.9);
-            border: 1px solid #ff3333;
+            padding: 12px 18px;
+            background: rgba(255, 255, 245, 0.7);
+            backdrop-filter: blur(12px);
+            border: 2px solid #b8d98c;
+            border-radius: 30px;
             margin-bottom: 15px;
             position: relative;
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(100, 120, 60, 0.15);
         }
         .status-bar::before {
-            content: 'MISSION';
+            content: 'GATE MISSION';
             position: absolute;
-            top: -8px;
-            left: 10px;
-            background: #000;
-            padding: 0 8px;
-            color: #ff3333;
+            top: -10px;
+            left: 18px;
+            background: #e8f5e9;
+            padding: 0 10px;
+            color: #6b8c42;
             font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-radius: 20px;
         }
 
         .energy-container {
@@ -102,71 +110,90 @@
             justify-content: space-between;
             font-size: 12px;
             margin-bottom: 5px;
-            color: #ff9900;
+            color: #7b9e4a;
+            font-weight: bold;
         }
         .energy-bar-bg {
             width: 100%;
-            height: 20px;
-            background: #111;
-            border: 1px solid #ff3333;
+            height: 22px;
+            background: #f0f0e0;
+            border: 1px solid #b8d98c;
+            border-radius: 20px;
             overflow: hidden;
         }
         .energy-fill {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #ff3333, #ff9900);
+            background: linear-gradient(90deg, #c5e0a4, #a8d56f);
+            border-radius: 20px;
             transition: width 0.3s ease;
         }
 
         .location-header {
             text-align: center;
             padding: 15px;
-            background: rgba(255,51,51,0.2);
-            border: 1px solid #ff3333;
+            background: rgba(200, 230, 170, 0.7);
+            backdrop-filter: blur(8px);
+            border: 2px solid #c5e0a4;
+            border-radius: 35px;
             margin-bottom: 15px;
             flex-shrink: 0;
         }
         .location-name {
-            font-size: 24px;
+            font-size: 26px;
             letter-spacing: 3px;
-            color: #ff3333;
+            color: #5d8233;
+            text-shadow: 0 1px 2px rgba(255,255,200,0.8);
         }
         .level-badge {
             font-size: 14px;
-            color: #ff9900;
+            color: #8bae5a;
             margin-top: 5px;
+            font-weight: bold;
         }
 
         .timer {
             font-size: 48px;
             font-weight: 900;
-            color: #ff3333;
-            text-shadow: 0 0 15px rgba(255,51,51,0.8);
+            color: #5d8233;
+            text-shadow: 0 2px 8px rgba(100, 130, 60, 0.3);
             text-align: center;
             margin-bottom: 15px;
             flex-shrink: 0;
         }
+        .timer.warning {
+            color: #e8a842;
+        }
 
+        /* 大圓角卡片 */
         .area-card {
-            background: rgba(0,0,0,0.9);
-            border: 2px solid #ff3333;
-            padding: 15px;
+            background: rgba(255, 255, 245, 0.85);
+            backdrop-filter: blur(4px);
+            border: 2px solid #d4e8b0;
+            border-radius: 32px;
+            padding: 18px;
             margin-bottom: 15px;
             flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(80, 100, 40, 0.1);
         }
         .section-title {
-            color: #ff3333;
-            margin-bottom: 10px;
+            color: #7b9e4a;
+            margin-bottom: 12px;
             font-size: 16px;
             letter-spacing: 2px;
+            font-weight: bold;
         }
         .image-container {
             width: 100%;
             aspect-ratio: 4/3;
-            background: #111;
-            border: 1px solid #ff3333;
+            background: #faf8e8;
+            border: 2px solid #d4e8b0;
+            border-radius: 24px;
             overflow: hidden;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .image-container img {
             width: 100%;
@@ -180,62 +207,79 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #666;
-            background: #0a0a0a;
+            color: #b8c98a;
+            background: #fffef5;
         }
-        .placeholder i { font-size: 40px; color: #ff3333; opacity: 0.5; }
+        .placeholder i { font-size: 40px; color: #c5e0a4; opacity: 0.8; }
 
+        /* 相似度計 */
         .similarity-meter {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(255,51,51,0.1);
-            border: 1px solid #ff3333;
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(210, 235, 170, 0.4);
+            border: 1px solid #cde4b0;
+            border-radius: 24px;
+        }
+        .meter-label {
+            color: #7b9e4a;
+            margin-bottom: 6px;
+            font-weight: bold;
         }
         .meter-bar {
             width: 100%;
             height: 12px;
-            background: #111;
-            border: 1px solid #ff3333;
+            background: #eef3e2;
+            border-radius: 20px;
             overflow: hidden;
             margin: 5px 0;
         }
         .meter-fill {
             height: 100%;
+            border-radius: 20px;
             transition: width 0.3s ease;
         }
-        .meter-fill.high { background: #00ff00; }
-        .meter-fill.medium { background: #ff9900; }
-        .meter-fill.low { background: #ff3333; }
+        .meter-fill.high { background: #7dbe3c; }
+        .meter-fill.medium { background: #c5d86b; }
+        .meter-fill.low { background: #e8bc6e; }
 
+        /* 質感按鈕 */
         .btn {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             font-size: 16px;
-            border: 2px solid #ff3333;
-            background: transparent;
-            color: white;
+            border: 2px solid #b8d98c;
+            border-radius: 40px;
+            background: rgba(255, 255, 240, 0.9);
+            color: #5d8233;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 2px;
             text-transform: uppercase;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             margin-top: 10px;
             -webkit-appearance: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
-        .btn:active { background: #ff3333; color: black; transform: scale(0.98); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn:active {
+            background: #d4e8b0;
+            color: #3a5c1e;
+            transform: translateY(2px);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            border-color: #a8cd6c;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .btn-boss {
-            border-color: #ff6600;
-            color: #ff6600;
-            background: rgba(255, 102, 0, 0.1);
+            border-color: #f0b34b;
+            color: #d9882c;
+            background: rgba(255, 245, 200, 0.9);
             animation: bossPulse 1s infinite;
         }
-        .btn-boss:active { background: #ff6600; color: black; }
+        .btn-boss:active { background: #f0b34b; color: white; }
         
         @keyframes bossPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 102, 0, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(255, 102, 0, 0); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(240, 180, 75, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(240, 180, 75, 0); }
         }
 
         #video {
@@ -248,8 +292,8 @@
 
         .photo-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 12px;
         }
         .photo-actions .btn {
             flex: 1;
@@ -258,26 +302,29 @@
 
         .back-button {
             position: fixed;
-            top: 15px;
-            left: 15px;
+            top: 18px;
+            left: 18px;
             z-index: 100;
         }
         .back-button a {
-            color: #ff3333;
+            color: #7b9e4a;
             text-decoration: none;
-            border: 1px solid #ff3333;
-            padding: 8px 12px;
+            border: 2px solid #b8d98c;
+            background: rgba(255, 255, 240, 0.9);
+            padding: 6px 14px;
             font-size: 12px;
-            background: rgba(0,0,0,0.8);
+            border-radius: 40px;
+            font-weight: bold;
+            backdrop-filter: blur(4px);
         }
 
         .bottom-buttons {
-            margin-top: 10px;
-            margin-bottom: 30px;
+            margin-top: 8px;
+            margin-bottom: 25px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .toast {
@@ -285,32 +332,36 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.95);
-            border: 2px solid #ff3333;
-            padding: 15px 25px;
-            font-size: 16px;
+            background: #fef7e0;
+            border: 2px solid #c5e0a4;
+            color: #5d8233;
+            padding: 12px 24px;
+            font-size: 15px;
+            border-radius: 50px;
             z-index: 1000;
             display: none;
             text-align: center;
             white-space: nowrap;
+            font-weight: bold;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
         .toast.show { display: block; animation: fadeIn 0.3s ease; }
 
         @keyframes energyPulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.05); }
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
         .shake { animation: shake 0.3s ease; }
         @keyframes shake {
-            0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)}
+            0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)}
         }
 
-        #cameraStatus.online { color: #00ff00; }
-        #cameraStatus.offline { color: #ff3333; }
+        #cameraStatus.online { color: #6b9e2e; font-weight: bold; }
+        #cameraStatus.offline { color: #c97e3a; }
     </style>
 </head>
 <body>
@@ -333,50 +384,57 @@
             <div class="energy-bar-bg"><div class="energy-fill" id="energyFill" style="width: 100%"></div></div>
         </div>
 
-        <div class="location-header" id="locationHeader" style="display: none;">
-            <div class="location-name">🏛️ GATE AREA</div>
-            <div class="level-badge" id="levelInfo">LEVEL 1/2 | TIME: 5:00</div>
-        </div>
-
-        <div class="area-card" id="challengeArea" style="display: none;">
-            <div class="section-title">🎯 TARGET PHOTO</div>
-            <div class="image-container" id="targetContainer">
-                <img id="targetImg" src="" alt="TARGET" style="width:100%; height:100%; object-fit:cover; display:none;">
-                <div class="placeholder" id="targetPlaceholder"><i>📸</i><p>LOADING CHALLENGE...</p></div>
-            </div>
-        </div>
-
-        <div class="similarity-meter" id="similarityMeter" style="display:none">
-            <div class="meter-label">MATCH RATE</div>
-            <div class="meter-bar"><div class="meter-fill" id="similarityFill" style="width:0%"></div></div>
-            <div id="similarityText" style="text-align:center; margin-top:5px; color:#ff3333">0%</div>
-        </div>
-
-        <div class="area-card" id="cameraArea" style="display: none;">
-            <div class="section-title">📷 YOUR CAMERA</div>
-            <div class="image-container">
-                <video id="video" autoplay playsinline></video>
-                <canvas id="canvas" style="display:none"></canvas>
-                <div class="placeholder" id="cameraPlaceholder"><i>📷</i><p>CAMERA OFFLINE</p></div>
-            </div>
-            <div class="photo-actions">
-                <button class="btn" id="takePhotoBtn" onclick="takePhoto()" disabled>📸 CAPTURE</button>
-                <button class="btn" id="submitBtn" onclick="submitMatch()" disabled>⬆ SUBMIT</button>
-            </div>
-            <div id="cameraStatus" style="text-align:center; margin-top:10px; font-size:12px">OFFLINE</div>
-        </div>
-
-        <div class="bottom-buttons" id="bottomButtons">
-            <button class="btn" id="nextLevelBtn" onclick="nextLevel()" style="display:none">⏭ NEXT LEVEL</button>
-            <button class="btn btn-boss" id="bossFightBtn" onclick="startBossFight()" style="display:none">⚔️ FIGHT WITH 遲兔 ⚔️</button>
-        </div>
-        
+        <!-- 場地介紹卡片（初始顯示） -->
         <div class="area-card" id="gateIntroCard">
             <div class="section-title">📍 GATE AREA</div>
             <div class="image-container">
-                <img id="gateImage" src="https://i.postimg.cc/WDxcZcLw/IMG-9842.jpg" alt="GATE">
+                <img id="gateImage" src="https://i.postimg.cc/3ktyF11d/IMG-9842.jpg" alt="GATE AREA">
             </div>
             <button class="btn" id="startMatchingBtn" onclick="startMatching()">▶ START MATCHING</button>
+        </div>
+
+        <!-- 遊戲主區域（初始隱藏） -->
+        <div id="gameMainArea" style="display: none;">
+            <div class="location-header" id="locationHeader">
+                <div class="location-name">🏛️ GATE AREA</div>
+                <div class="level-badge" id="levelInfo">LEVEL 1/2 | TIME: 5:00</div>
+            </div>
+
+            <div class="area-card" id="challengeArea">
+                <div class="section-title">🎯 TARGET PHOTO</div>
+                <div class="image-container" id="targetContainer">
+                    <img id="targetImg" src="" alt="TARGET" style="width:100%; height:100%; object-fit:cover; display:none;">
+                    <div class="placeholder" id="targetPlaceholder">
+                        <i>🖼️</i>
+                        <p>Waiting for target image...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="similarity-meter" id="similarityMeter" style="display:none">
+                <div class="meter-label">MATCH RATE</div>
+                <div class="meter-bar"><div class="meter-fill" id="similarityFill" style="width:0%"></div></div>
+                <div id="similarityText" style="text-align:center; margin-top:6px; color:#8bae5a">0%</div>
+            </div>
+
+            <div class="area-card" id="cameraArea">
+                <div class="section-title">📷 YOUR CAMERA</div>
+                <div class="image-container">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas" style="display:none"></canvas>
+                    <div class="placeholder" id="cameraPlaceholder"><i>📷</i><p>CAMERA OFFLINE</p></div>
+                </div>
+                <div class="photo-actions">
+                    <button class="btn" id="takePhotoBtn" onclick="takePhoto()" disabled>📸 CAPTURE</button>
+                    <button class="btn" id="submitBtn" onclick="submitMatch()" disabled>⬆ SUBMIT</button>
+                </div>
+                <div id="cameraStatus" style="text-align:center; margin-top:12px; font-size:13px">OFFLINE</div>
+            </div>
+
+            <div class="bottom-buttons" id="bottomButtons">
+                <button class="btn" id="nextLevelBtn" onclick="nextLevel()" style="display:none">⏭ NEXT LEVEL</button>
+                <button class="btn btn-boss" id="bossFightBtn" onclick="startBossFight()" style="display:none">⚔️ FIGHT WITH 遲兔 ⚔️</button>
+            </div>
         </div>
     </div>
 
@@ -384,14 +442,12 @@
 
     <script>
         // ========== 遊戲設定 ==========
-        // 減少到 2 張隨機照片
         const LEVEL_IMAGES = [
             "https://i.postimg.cc/ThffJG5g/IMG-9773.jpg",
             "https://i.postimg.cc/3k4TxxVs/IMG-9775.jpg"
         ];
         
-        // 對應的限時 (秒) - 2個關卡
-        const LEVEL_TIMES = [300, 240];  // 5分鐘, 4分鐘
+        const LEVEL_TIMES = [300, 240];
         
         const MAX_REDUCTION_PER_LEVEL = 4;
         
@@ -437,19 +493,16 @@
         const levelInfo = document.getElementById('levelInfo');
         const energyFill = document.getElementById('energyFill');
         const energyPercent = document.getElementById('energyPercent');
-        const gateIntroCard = document.getElementById('gateIntroCard');
-        const locationHeader = document.getElementById('locationHeader');
-        const challengeArea = document.getElementById('challengeArea');
-        const cameraArea = document.getElementById('cameraArea');
         
-        // ========== 開始匹配 ==========
+        // 場地介紹卡片和遊戲主區域
+        const gateIntroCard = document.getElementById('gateIntroCard');
+        const gameMainArea = document.getElementById('gameMainArea');
+        
+        // ========== 開始匹配（點擊 START MATCHING 後執行） ==========
         async function startMatching() {
-            console.log("startMatching called");
-            
-            if (gateIntroCard) gateIntroCard.style.display = 'none';
-            if (locationHeader) locationHeader.style.display = 'block';
-            if (challengeArea) challengeArea.style.display = 'block';
-            if (cameraArea) cameraArea.style.display = 'block';
+            // 隱藏場地介紹卡片，顯示遊戲主區域
+            gateIntroCard.style.display = 'none';
+            gameMainArea.style.display = 'block';
             
             await initCamera();
             startLevel();
@@ -457,33 +510,25 @@
         
         async function initCamera() {
             try {
-                showToast("REQUESTING CAMERA ACCESS...");
-                
+                showToast("📷 REQUESTING CAMERA...");
                 const constraints = { video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'environment' } };
                 gameState.camera = await navigator.mediaDevices.getUserMedia(constraints);
                 video.srcObject = gameState.camera;
-                
                 await new Promise(resolve => { video.onloadedmetadata = () => { video.play(); resolve(); }; });
                 video.classList.add('visible');
-                
                 const cameraPlaceholder = document.getElementById('cameraPlaceholder');
                 if (cameraPlaceholder) cameraPlaceholder.style.display = 'none';
-                
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 gameState.cameraActive = true;
-                
                 const cameraStatus = document.getElementById('cameraStatus');
                 if (cameraStatus) {
                     cameraStatus.textContent = 'ONLINE';
-                    cameraStatus.style.color = '#00ff00';
+                    cameraStatus.style.color = '#6b9e2e';
                 }
-                
                 if (takePhotoBtn) takePhotoBtn.disabled = false;
-                
                 showToast("✅ CAMERA READY");
             } catch (error) {
-                console.error("Camera error:", error);
                 showToast("❌ CAMERA ACCESS DENIED", "error");
                 const cameraStatus = document.getElementById('cameraStatus');
                 if (cameraStatus) cameraStatus.textContent = 'OFFLINE';
@@ -509,7 +554,7 @@
             submitBtn.disabled = true;
             submitBtn.style.display = 'block';
             nextLevelBtn.style.display = 'none';
-            if (bossFightBtn) bossFightBtn.style.display = 'none';
+            bossFightBtn.style.display = 'none';
             takePhotoBtn.disabled = false;
             takePhotoBtn.textContent = "📸 CAPTURE";
             
@@ -520,13 +565,10 @@
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
             gameState.timer = seconds;
             updateTimerDisplay();
-            
             gameState.timerInterval = setInterval(() => {
                 if (gameState.timer <= 0) {
                     clearInterval(gameState.timerInterval);
-                    if (!gameState.isSubmitted && !gameState.levelCompleted) {
-                        handleTimeout();
-                    }
+                    if (!gameState.isSubmitted && !gameState.levelCompleted) handleTimeout();
                 } else {
                     gameState.timer--;
                     updateTimerDisplay();
@@ -538,8 +580,11 @@
             const mins = Math.floor(gameState.timer / 60);
             const secs = gameState.timer % 60;
             timerDisplay.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-            if (gameState.timer <= 10) timerDisplay.style.color = "#ff9900";
-            else timerDisplay.style.color = "#ff3333";
+            if (gameState.timer <= 10) {
+                timerDisplay.classList.add('warning');
+            } else {
+                timerDisplay.classList.remove('warning');
+            }
         }
         
         function handleTimeout() {
@@ -554,46 +599,33 @@
         function takePhoto() {
             if (!gameState.cameraActive) { showToast("CAMERA OFFLINE", "error"); return; }
             if (gameState.isSubmitted) { showToast("LEVEL ALREADY COMPLETED", "warning"); return; }
-            
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             gameState.currentPhoto = canvas.toDataURL('image/jpeg', 0.95);
-            
             takePhotoBtn.textContent = "📸 RETRY";
             showToast("📸 PHOTO TAKEN! CALCULATING SIMILARITY...");
-            
             calculateSimilarity();
         }
         
         function calculateSimilarity() {
             if (gameState.isSubmitted) return;
-            
             const baseSimilarity = 40 + Math.random() * 50;
             const attemptBonus = Math.min(15, Math.floor(Math.random() * 20));
             let similarity = Math.min(98, baseSimilarity + attemptBonus);
             similarity = Math.floor(similarity);
-            
             gameState.currentSimilarity = similarity;
             displaySimilarity(similarity);
-            
             submitBtn.disabled = false;
-            
-            if (similarity >= 90) {
-                showToast(`✅ EXCELLENT! ${similarity}% - READY TO SUBMIT`);
-            } else if (similarity >= 70) {
-                showToast(`👍 GOOD! ${similarity}% - READY TO SUBMIT`);
-            } else if (similarity >= 50) {
-                showToast(`📸 ${similarity}% - CAN SUBMIT BUT LOW REDUCTION`);
-            } else {
-                showToast(`⚠️ ${similarity}% - SUBMIT WILL REDUCE LITTLE ENERGY`);
-            }
+            if (similarity >= 90) showToast(`✅ EXCELLENT! ${similarity}% - READY TO SUBMIT`);
+            else if (similarity >= 70) showToast(`👍 GOOD! ${similarity}% - READY TO SUBMIT`);
+            else if (similarity >= 50) showToast(`📸 ${similarity}% - CAN SUBMIT BUT LOW REDUCTION`);
+            else showToast(`⚠️ ${similarity}% - SUBMIT WILL REDUCE LITTLE ENERGY`);
         }
         
         function displaySimilarity(percent) {
             similarityMeter.style.display = 'block';
             similarityFill.style.width = percent + '%';
             similarityText.textContent = percent + '%';
-            
             if (percent >= 80) similarityFill.className = 'meter-fill high';
             else if (percent >= 50) similarityFill.className = 'meter-fill medium';
             else similarityFill.className = 'meter-fill low';
@@ -601,51 +633,29 @@
         
         function submitMatch() {
             if (gameState.isSubmitted) return;
-            
             let reduction = getReductionBySimilarity(gameState.currentSimilarity);
             const timeBonus = Math.min(1.5, Math.floor(gameState.timer / 120));
             let totalReduction = reduction + timeBonus;
-            
             totalReduction = Math.min(MAX_REDUCTION_PER_LEVEL, totalReduction);
             totalReduction = Math.min(gameState.energy, totalReduction);
-            
             gameState.energy = Math.max(0, gameState.energy - totalReduction);
             updateEnergyBar();
-            
             let gradeText = "";
             let messageColor = "info";
-            
-            if (gameState.currentSimilarity >= 90) {
-                gradeText = "✨ PERFECT MATCH! ✨";
-                messageColor = "success";
-            } else if (gameState.currentSimilarity >= 70) {
-                gradeText = "🌟 GOOD MATCH! 🌟";
-                messageColor = "success";
-            } else if (gameState.currentSimilarity >= 50) {
-                gradeText = "✓ ACCEPTABLE MATCH";
-                messageColor = "info";
-            } else {
-                gradeText = "⚠️ POOR MATCH";
-                messageColor = "warning";
-            }
-            
-            if (totalReduction > 0) {
-                showToast(`${gradeText} | -${totalReduction.toFixed(1)}% NEGATIVE ENERGY`, messageColor);
-            } else {
-                showToast(`${gradeText} | NO ENERGY REDUCED`, "warning");
-            }
-            
+            if (gameState.currentSimilarity >= 90) { gradeText = "✨ PERFECT MATCH! ✨"; messageColor = "success"; }
+            else if (gameState.currentSimilarity >= 70) { gradeText = "🌟 GOOD MATCH! 🌟"; messageColor = "success"; }
+            else if (gameState.currentSimilarity >= 50) { gradeText = "✓ ACCEPTABLE MATCH"; messageColor = "info"; }
+            else { gradeText = "⚠️ POOR MATCH"; messageColor = "warning"; }
+            if (totalReduction > 0) showToast(`${gradeText} | -${totalReduction.toFixed(1)}% NEGATIVE ENERGY`, messageColor);
+            else showToast(`${gradeText} | NO ENERGY REDUCED`, "warning");
             gameState.isSubmitted = true;
             gameState.levelCompleted = true;
             takePhotoBtn.disabled = true;
             submitBtn.disabled = true;
-            
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
-            
-            // 檢查是否完成所有 2 個 Level
             if (gameState.currentLevel === 2) {
                 nextLevelBtn.style.display = 'none';
-                if (bossFightBtn) bossFightBtn.style.display = 'block';
+                bossFightBtn.style.display = 'block';
                 showToast("🏆 GATE AREA COMPLETED! BOSS FIGHT UNLOCKED!");
             } else {
                 nextLevelBtn.style.display = 'block';
@@ -656,8 +666,8 @@
         function updateEnergyBar() {
             energyFill.style.width = gameState.energy + '%';
             energyPercent.textContent = Math.floor(gameState.energy) + '%';
-            if (gameState.energy <= 30) energyFill.style.background = "linear-gradient(90deg, #ff9900, #ffff00)";
-            if (gameState.energy <= 10) energyFill.style.background = "#00ff00";
+            if (gameState.energy <= 30) energyFill.style.background = "linear-gradient(90deg, #e8bc6e, #f0c48a)";
+            if (gameState.energy <= 10) energyFill.style.background = "#f0a46e";
         }
         
         function nextLevel() {
@@ -670,175 +680,89 @@
                 similarityMeter.style.display = 'none';
                 submitBtn.disabled = true;
                 nextLevelBtn.style.display = 'none';
-                if (bossFightBtn) bossFightBtn.style.display = 'none';
+                bossFightBtn.style.display = 'none';
                 takePhotoBtn.disabled = false;
                 takePhotoBtn.textContent = "📸 CAPTURE";
-                
                 startLevel();
             }
         }
         
-        // ========== BOSS 戰鬥 ==========
         function startBossFight() {
             showToast("⚔️ FIGHT WITH 遲兔 - INITIATING BATTLE... ⚔️");
-            
-            // 隱藏所有遊戲元素
-            const elementsToHide = [
-                '.status-bar', '.energy-container', '#locationHeader', 
-                '#challengeArea', '#cameraArea', '#bottomButtons', '#gateIntroCard'
-            ];
-            elementsToHide.forEach(selector => {
-                const el = document.querySelector(selector);
-                if (el) el.style.display = 'none';
-            });
-            
+            const elementsToHide = ['.status-bar', '.energy-container', '#gameMainArea', '#gateIntroCard'];
+            elementsToHide.forEach(selector => { const el = document.querySelector(selector); if (el) el.style.display = 'none'; });
             loadBossFightGame();
         }
         
         function loadBossFightGame() {
             const bossHTML = `
-                <div id="bossFightContainer" style="width:100%; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+                <div id="bossFightContainer" style="width:100%; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; background:linear-gradient(145deg, #e8f5e9, #fff9c4);">
                     <div style="text-align:center;">
-                        <h1 style="font-size:2rem; color:#ff6600; text-shadow:0 0 15px #f60; margin:0;">⚔️ POWER CLASH ⚔️</h1>
-                        <h2 style="font-size:1.2rem; color:#ffaa44;">VS 遲兔</h2>
-                        <div id="bossTimer" style="font-family:monospace; font-size:2rem; color:#ffcc00; margin:10px 0;">00:00.00</div>
+                        <h1 style="font-size:2rem; color:#d9882c; text-shadow:0 0 5px #ffe0a3; margin:0;">⚔️ POWER CLASH ⚔️</h1>
+                        <h2 style="font-size:1.2rem; color:#b87a2a;">VS 遲兔</h2>
+                        <div id="bossTimer" style="font-family:monospace; font-size:2rem; color:#8bae5a; margin:10px 0;">00:00.00</div>
                     </div>
-                    
                     <div style="width:92%; max-width:500px;">
                         <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:8px;">
-                            <span style="color:#ff6600">🐇 遲兔 [BOSS]</span>
-                            <span style="color:#ff6666">🔥 YOU</span>
+                            <span style="color:#d97a2a">🐇 遲兔 [BOSS]</span>
+                            <span style="color:#6b9e2e">🔥 YOU</span>
                         </div>
-                        <div style="width:100%; height:50px; background:#111; border:4px solid #fff; position:relative; overflow:hidden;">
-                            <div id="compFill" style="position:absolute; left:0; height:100%; background:linear-gradient(to right, #630, #f60); width:50%; transition:width 0.04s linear;"></div>
-                            <div id="plyFill" style="position:absolute; right:0; height:100%; background:linear-gradient(to left, #600, #f00); width:50%; transition:width 0.04s linear;"></div>
+                        <div style="width:100%; height:50px; background:#eef3e2; border:4px solid #b8d98c; border-radius:30px; position:relative; overflow:hidden;">
+                            <div id="compFill" style="position:absolute; left:0; height:100%; background:linear-gradient(to right, #e8a64a, #f0b86e); width:50%; transition:width 0.04s linear;"></div>
+                            <div id="plyFill" style="position:absolute; right:0; height:100%; background:linear-gradient(to left, #8bc66a, #a8d86f); width:50%; transition:width 0.04s linear;"></div>
                             <div id="clashSpark" style="position:absolute; top:0; bottom:0; width:6px; background:#fff; box-shadow:0 0 20px 8px #fff; transform:translateX(-50%); left:50%; transition:left 0.04s linear;"></div>
                         </div>
                     </div>
-                    
                     <div id="bossMsg" style="font-size:2rem; font-weight:900; height:80px; text-align:center; margin:20px 0;"></div>
-                    
                     <div style="display:flex; flex-direction:column; align-items:center; gap:15px;">
-                        <div id="tapZone" style="width:180px; height:180px; background:radial-gradient(circle, #ff8844 0%, #ff4400 100%); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border:12px solid rgba(255,255,255,0.2); box-shadow:0 0 40px rgba(255,68,0,0.6); cursor:pointer;">⚡ STRIKE ⚡</div>
-                        <button id="bossRestartBtn" style="padding:10px 20px; background:#222; color:#fff; border:1px solid #ff6600; border-radius:5px; cursor:pointer;">RESTART BATTLE</button>
-                        <button id="bossExitBtn" style="padding:10px 20px; background:#222; color:#ff6600; border:1px solid #ff6600; border-radius:5px; cursor:pointer;">← EXIT TO GATE</button>
+                        <div id="tapZone" style="width:180px; height:180px; background:radial-gradient(circle, #f0cc88, #e8a642); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; border:12px solid rgba(255,255,200,0.5); box-shadow:0 0 40px rgba(232,166,66,0.6); cursor:pointer;">⚡ STRIKE ⚡</div>
+                        <button id="bossRestartBtn" style="padding:10px 20px; background:#fef7e0; color:#7b9e4a; border:2px solid #b8d98c; border-radius:40px; cursor:pointer;">RESTART BATTLE</button>
+                        <button id="bossExitBtn" style="padding:10px 20px; background:#fef7e0; color:#d9882c; border:2px solid #b8d98c; border-radius:40px; cursor:pointer;">← EXIT TO GATE</button>
                     </div>
                 </div>
             `;
-            
             const container = document.querySelector('.game-container');
             container.innerHTML = bossHTML;
-            
             initBossFight();
         }
         
         function initBossFight() {
             let pos = 50;
             let active = true;
-            let cpuTimer;
-            let clockTimer;
-            let startTime;
-            let elapsedTime = 0;
-            
+            let cpuTimer, clockTimer, startTime, elapsedTime = 0;
             const plyPower = 3.5;
             const cpuPower = 4.2;
             const cpuInterval = 120;
-            
             const compFill = document.getElementById('compFill');
             const plyFill = document.getElementById('plyFill');
             const spark = document.getElementById('clashSpark');
             const timerDisplay = document.getElementById('bossTimer');
             const msgArea = document.getElementById('bossMsg');
             const tapZone = document.getElementById('tapZone');
-            
-            function formatTime(ms) {
-                let totalSeconds = ms / 1000;
-                let m = Math.floor(totalSeconds / 60);
-                let s = Math.floor(totalSeconds % 60);
-                let h = Math.floor((ms % 1000) / 10);
-                return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${h.toString().padStart(2, '0')}`;
-            }
-            
-            function updateClock() {
-                if (!active) return;
-                elapsedTime = Date.now() - startTime;
-                timerDisplay.innerText = formatTime(elapsedTime);
-                clockTimer = requestAnimationFrame(updateClock);
-            }
-            
-            function updateUI() {
-                if (spark) spark.style.left = pos + "%";
-                if (compFill) compFill.style.width = pos + "%";
-                if (plyFill) plyFill.style.width = (100 - pos) + "%";
-                
-                if (pos <= 0) endGame("WIN");
-                if (pos >= 100) endGame("LOSE");
-            }
-            
-            function tapHandler(e) {
-                e.preventDefault();
-                if (!active) return;
-                if (navigator.vibrate) navigator.vibrate(20);
-                pos -= plyPower;
-                if (pos < 0) pos = 0;
-                updateUI();
-            }
-            
-            function cpuCycle() {
-                if (!active) return;
-                pos += cpuPower;
-                if (pos > 100) pos = 100;
-                updateUI();
-                cpuTimer = setTimeout(cpuCycle, cpuInterval);
-            }
-            
-            function endGame(res) {
-                active = false;
-                clearTimeout(cpuTimer);
-                cancelAnimationFrame(clockTimer);
-                
-                if (res === "WIN") {
-                    msgArea.innerHTML = `<span style="color:#0af">✨ VICTORY! 遲兔 DEFEATED! ✨</span><div style="font-size:1rem; color:#aaa;">Time: ${formatTime(elapsedTime)}</div>`;
-                } else {
-                    msgArea.innerHTML = `<span style="color:#f33">💀 DEFEATED... TRY AGAIN! 💀</span><div style="font-size:0.9rem; color:#666;">Survived: ${formatTime(elapsedTime)}</div>`;
-                }
-            }
-            
-            function resetBattle() {
-                pos = 50;
-                active = true;
-                elapsedTime = 0;
-                timerDisplay.innerText = "00:00.00";
-                msgArea.innerHTML = "";
-                updateUI();
-                
-                startTime = Date.now();
-                updateClock();
-                clearTimeout(cpuTimer);
-                setTimeout(cpuCycle, 800);
-            }
-            
-            function exitBattle() {
-                window.location.href = 'gate.html';
-            }
-            
-            if (tapZone) tapZone.addEventListener('pointerdown', tapHandler);
+            function formatTime(ms) { let totalSeconds = ms / 1000; let m = Math.floor(totalSeconds / 60); let s = Math.floor(totalSeconds % 60); let h = Math.floor((ms % 1000) / 10); return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${h.toString().padStart(2,'0')}`; }
+            function updateClock() { if (!active) return; elapsedTime = Date.now() - startTime; timerDisplay.innerText = formatTime(elapsedTime); clockTimer = requestAnimationFrame(updateClock); }
+            function updateUI() { if(spark) spark.style.left = pos + "%"; if(compFill) compFill.style.width = pos + "%"; if(plyFill) plyFill.style.width = (100 - pos) + "%"; if(pos <= 0) endGame("WIN"); if(pos >= 100) endGame("LOSE"); }
+            function tapHandler(e) { e.preventDefault(); if (!active) return; if(navigator.vibrate) navigator.vibrate(20); pos -= plyPower; if(pos < 0) pos = 0; updateUI(); }
+            function cpuCycle() { if (!active) return; pos += cpuPower; if(pos > 100) pos = 100; updateUI(); cpuTimer = setTimeout(cpuCycle, cpuInterval); }
+            function endGame(res) { active = false; clearTimeout(cpuTimer); cancelAnimationFrame(clockTimer); if(res === "WIN") msgArea.innerHTML = `<span style="color:#6b9e2e">✨ VICTORY! 遲兔 DEFEATED! ✨</span><div style="font-size:1rem; color:#8bae5a;">Time: ${formatTime(elapsedTime)}</div>`; else msgArea.innerHTML = `<span style="color:#d97a2a">💀 DEFEATED... TRY AGAIN! 💀</span><div style="font-size:0.9rem; color:#b87a3a;">Survived: ${formatTime(elapsedTime)}</div>`; }
+            function resetBattle() { pos = 50; active = true; elapsedTime = 0; timerDisplay.innerText = "00:00.00"; msgArea.innerHTML = ""; updateUI(); startTime = Date.now(); updateClock(); clearTimeout(cpuTimer); setTimeout(cpuCycle, 800); }
+            function exitBattle() { window.location.href = 'gate.html'; }
+            if(tapZone) tapZone.addEventListener('pointerdown', tapHandler);
             const restartBtn = document.getElementById('bossRestartBtn');
             const exitBtn = document.getElementById('bossExitBtn');
-            if (restartBtn) restartBtn.addEventListener('click', resetBattle);
-            if (exitBtn) exitBtn.addEventListener('click', exitBattle);
-            
+            if(restartBtn) restartBtn.addEventListener('click', resetBattle);
+            if(exitBtn) exitBtn.addEventListener('click', exitBattle);
             resetBattle();
-            msgArea.innerHTML = "<div style='font-size:1.2rem; color:#ffcc00'>⚡ TAP TO STRIKE! DEFEAT 遲兔! ⚡</div>";
+            msgArea.innerHTML = "<div style='font-size:1.2rem; color:#e8a642'>⚡ TAP TO STRIKE! DEFEAT 遲兔! ⚡</div>";
         }
         
         function showToast(msg, type = "info") {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.className = 'toast show';
-            if (type === "error") toast.style.background = "rgba(255,51,51,0.9)";
-            else if (type === "warning") toast.style.background = "rgba(255,153,0,0.9)";
-            else toast.style.background = "rgba(0,255,0,0.9)";
+            if (type === "error") toast.style.background = "#ffe0cc";
+            else if (type === "warning") toast.style.background = "#fff0cc";
+            else toast.style.background = "#e0f0d0";
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
         
