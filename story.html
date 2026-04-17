@@ -245,13 +245,12 @@
             typing();
         }
 
-        function nextStep() {
-            currentLine++;
-            updateUI();
-        }
+        function nextPage() {
+        window.location.href = 'camera_game.html';
+    }
 
-        // 初始化
-        window.onload = updateUI;
-    </script>
+    window.onload = initCamera;
+</script>
+
 </body>
 </html>
