@@ -27,7 +27,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 柔和彩色背景 (保留) */
+        /* 柔和彩色背景 */
         .cyber-bg {
             position: fixed;
             top: 0;
@@ -50,7 +50,7 @@
             z-index: -1;
         }
 
-        /* 像素掃描線 (改為更硬的線條) */
+        /* 像素掃描線 */
         .scan-line {
             position: fixed;
             top: 0;
@@ -76,7 +76,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* 像素風格狀態欄 (直角、硬邊框) */
+        /* 像素風格狀態欄 */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -162,7 +162,7 @@
             color: #e8a842;
         }
 
-        /* 像素卡片 (直角、硬陰影) */
+        /* 像素卡片 */
         .area-card {
             background: rgba(255, 255, 245, 0.9);
             border: 3px solid #b8d98c;
@@ -671,6 +671,7 @@
             }
         }
         
+        // ========== BOSS 戰鬥 ==========
         function startBossFight() {
             showToast("⚔️ FIGHT WITH 遲兔 - INITIATING BATTLE... ⚔️");
             const elementsToHide = ['.status-bar', '.energy-container', '#gameMainArea', '#gateIntroCard'];
@@ -681,25 +682,31 @@
         function loadBossFightGame() {
             const bossHTML = `
                 <div id="bossFightContainer" style="width:100%; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; background:linear-gradient(145deg, #e8f5e9, #fff9c4);">
-                    <div style="text-align:center;">
-                        <h1 style="font-size:1.5rem; color:#d9882c; font-family:'Press Start 2P',monospace;">⚔️ POWER CLASH ⚔️</h1>
-                        <h2 style="font-size:1rem; color:#b87a2a;">VS 遲兔</h2>
-                        <div id="bossTimer" style="font-family:monospace; font-size:1.2rem; color:#8bae5a; margin:10px 0;">00:00.00</div>
+                    <!-- 標題區域 - 置中 -->
+                    <div style="text-align:center; width:100%; margin-bottom:15px;">
+                        <h1 style="font-size:1.5rem; color:#d9882c; font-family:'Press Start 2P',monospace; text-align:center; margin:0 0 10px 0;">⚔️ POWER CLASH ⚔️</h1>
+                        <h2 style="font-size:1rem; color:#b87a2a; text-align:center; margin:0 0 10px 0;">VS 遲兔</h2>
+                        <div id="bossTimer" style="font-family:monospace; font-size:1.2rem; color:#8bae5a; text-align:center; margin:5px 0;">00:00.00</div>
                     </div>
-                    <div style="width:92%; max-width:500px;">
-                        <div style="display:flex; justify-content:space-between; font-family:'Press Start 2P',monospace; font-size:0.7rem;">
+                    
+                    <!-- 戰鬥條區域 -->
+                    <div style="width:92%; max-width:400px; margin:0 auto;">
+                        <div style="display:flex; justify-content:space-between; font-family:'Press Start 2P',monospace; font-size:0.6rem; margin-bottom:5px;">
                             <span style="color:#d97a2a">🐇 遲兔 [BOSS]</span>
                             <span style="color:#6b9e2e">🔥 YOU</span>
                         </div>
-                        <div style="width:100%; height:40px; background:#eef3e2; border:3px solid #8bae5a; position:relative;">
-                            <div id="compFill" style="position:absolute; left:0; height:100%; background:#e8a64a; width:50%; transition:width 0.04s linear;"></div>
-                            <div id="plyFill" style="position:absolute; right:0; height:100%; background:#8bc66a; width:50%; transition:width 0.04s linear;"></div>
+                        <div style="width:100%; height:35px; background:#1a120a; border:3px solid #8b6946; position:relative;">
+                            <div id="compFill" style="position:absolute; left:0; height:100%; background:#e9c46a; width:50%; transition:width 0.04s linear;"></div>
+                            <div id="plyFill" style="position:absolute; right:0; height:100%; background:#6a994e; width:50%; transition:width 0.04s linear;"></div>
                             <div id="clashSpark" style="position:absolute; top:0; bottom:0; width:4px; background:#fff; box-shadow:0 0 8px 2px #fff; transform:translateX(-50%); left:50%; transition:left 0.04s linear;"></div>
                         </div>
                     </div>
-                    <div id="bossMsg" style="font-size:1rem; height:60px; text-align:center; margin:15px 0;"></div>
-                    <div style="display:flex; flex-direction:column; align-items:center; gap:15px; margin-top:20px;">
-                        <div id="tapZone" style="width:120px; height:120px; background:radial-gradient(circle, #f0cc88, #e8a642); display:flex; align-items:center; justify-content:center; font-size:1rem; border:4px solid #8bae5a; cursor:pointer;">⚡ STRIKE ⚡</div>
+                    
+                    <div id="bossMsg" style="font-size:0.9rem; height:50px; text-align:center; margin:15px 0;"></div>
+                    
+                    <!-- 按鈕區域 - STRIKE 置中 -->
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:12px; width:100%; margin-top:10px;">
+                        <div id="tapZone" style="width:120px; height:120px; background:radial-gradient(circle, #f0cc88, #e8a642); display:flex; align-items:center; justify-content:center; font-size:1rem; border:4px solid #8bae5a; cursor:pointer; margin:0 auto;">⚡ STRIKE ⚡</div>
                         <button id="bossRestartBtn" style="padding:8px 16px; background:#fef7e0; color:#7b9e4a; border:3px solid #8bae5a; font-family:'Press Start 2P',monospace; font-size:0.6rem; cursor:pointer;">RESTART</button>
                         <button id="bossExitBtn" style="padding:8px 16px; background:#fef7e0; color:#d9882c; border:3px solid #8bae5a; font-family:'Press Start 2P',monospace; font-size:0.6rem; cursor:pointer;">← EXIT</button>
                     </div>
@@ -729,7 +736,7 @@
             function updateUI() { if(spark) spark.style.left = pos + "%"; if(compFill) compFill.style.width = pos + "%"; if(plyFill) plyFill.style.width = (100 - pos) + "%"; if(pos <= 0) endGame("WIN"); if(pos >= 100) endGame("LOSE"); }
             function tapHandler(e) { e.preventDefault(); if (!active) return; if(navigator.vibrate) navigator.vibrate(20); pos -= plyPower; if(pos < 0) pos = 0; updateUI(); }
             function cpuCycle() { if (!active) return; pos += cpuPower; if(pos > 100) pos = 100; updateUI(); cpuTimer = setTimeout(cpuCycle, cpuInterval); }
-            function endGame(res) { active = false; clearTimeout(cpuTimer); cancelAnimationFrame(clockTimer); if(res === "WIN") msgArea.innerHTML = `<span style="color:#6b9e2e">✨ VICTORY! ✨</span><div style="font-size:0.7rem;">Time: ${formatTime(elapsedTime)}</div>`; else msgArea.innerHTML = `<span style="color:#d97a2a">💀 DEFEATED 💀</span><div style="font-size:0.7rem;">Survived: ${formatTime(elapsedTime)}</div>`; }
+            function endGame(res) { active = false; clearTimeout(cpuTimer); cancelAnimationFrame(clockTimer); if(res === "WIN") msgArea.innerHTML = `<span style="color:#6b9e2e">✨ VICTORY! ✨</span><div style="font-size:0.6rem;">Time: ${formatTime(elapsedTime)}</div>`; else msgArea.innerHTML = `<span style="color:#d97a2a">💀 DEFEATED 💀</span><div style="font-size:0.6rem;">Survived: ${formatTime(elapsedTime)}</div>`; }
             function resetBattle() { pos = 50; active = true; elapsedTime = 0; timerDisplay.innerText = "00:00.00"; msgArea.innerHTML = ""; updateUI(); startTime = Date.now(); updateClock(); clearTimeout(cpuTimer); setTimeout(cpuCycle, 800); }
             function exitBattle() { window.location.href = 'gate.html'; }
             
@@ -746,7 +753,7 @@
             }
             
             resetBattle();
-            msgArea.innerHTML = "<div style='font-size:0.8rem; color:#e8a642'>⚡ TAP TO STRIKE! ⚡</div>";
+            msgArea.innerHTML = "<div style='font-size:0.7rem; color:#e8a642'>⚡ TAP TO STRIKE! ⚡</div>";
         }
         
         function showToast(msg, type = "info") {
